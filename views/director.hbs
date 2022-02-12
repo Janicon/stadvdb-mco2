@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- meta information -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <!-- title of webpage -->
+        <title> STADVDB </title>
+
+        <!-- css files -->
+        <link rel="stylesheet" type="text/css" href="../css/global.css">
+        <link rel="stylesheet" type="text/css" href="../css/director.css">
+
+        <!-- Font Awesome icon library -->
+        <script src="https://kit.fontawesome.com/77b56ec5f8.js" crossorigin="anonymous"></script>
+
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- scripts -->
+        <!--
+        <script type="text/javascript" src="./js/movie.js"></script>
+        -->
+    </head>
+
+    <body>
+        <h1 class="section-header">{{fname}} {{lname}}</h1>
+        <div id="main-body">
+            <h2 class="section-header">Genres</h2>
+            <div id="genres-box">
+                <table id="genres-records">
+                    <thead>
+                        <tr>
+                            <th>Genre</th>
+                            <th>Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each genres}}
+                            <tr>
+                                <td>{{genre}}</td>
+                                <td>{{prob}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <h2 class="section-header">Movies</h2>
+            <div id="movies-box">
+                <table id="movies-records">
+                    <thead>
+                        <tr>
+                            <th>Movie Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each movies}}
+                            <tr>
+                                <td>{{this}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

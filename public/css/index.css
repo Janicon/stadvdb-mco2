@@ -1,0 +1,61 @@
+#id-summary {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    width: 80%;
+    margin: auto;
+}
+
+#id-summary > div {
+    width: 30%;
+    margin: 16px;
+}
+
+#id-summary button {
+    margin-bottom: 16px;
+}
+
+/*  Remove arrow selector for number input
+    Ref: https://www.geeksforgeeks.org/how-to-disable-arrows-from-number-input/
+*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input:focus {
+    outline: none;
+}
+
+.id-box {
+    height: 320px;
+    overflow-y: scroll;
+    border: 1px solid white;
+    text-align: left;
+    padding: 0px 8px;
+}
+
+.id-box-records {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.id-box-records tr {
+    margin-bottom: 4px;
+}
+
+.id-box-records th {
+    position: sticky;
+    top: 0;
+    padding: 0;
+    background-color: #202324;
+}
+
+.id-box-records td {
+    padding: 0;
+}
+
+.id-box-records td:nth-child(1) {
+    width: 75%;
+}

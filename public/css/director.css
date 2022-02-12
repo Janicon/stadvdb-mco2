@@ -1,0 +1,61 @@
+#genres-box {
+    width: 50%;
+    height: 320px;
+    overflow-y: scroll;
+    border: 1px solid white;
+    text-align: left;
+    padding: 0px 8px;
+}
+
+#genres-records {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#genres-records tr {
+    margin-bottom: 4px;
+}
+
+#genres-records th {
+    position: sticky;
+    top: 0;
+    padding: 0;
+    background-color: #202324;
+}
+
+#genres-records td {
+    padding: 0;
+}
+
+#genres-records td:nth-child(1) {
+    width: 75%;
+}
+
+#movies-box {
+    width: 50%;
+    height: 320px;
+    overflow-y: scroll;
+    border: 1px solid white;
+    text-align: left;
+    padding: 0px 8px;
+}
+
+#movies-records {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#movies-records tr {
+    margin-bottom: 4px;
+}
+
+#movies-records th {
+    position: sticky;
+    top: 0;
+    padding: 0;
+    background-color: #202324;
+}
+
+#movies-records td {
+    padding: 0;
+}

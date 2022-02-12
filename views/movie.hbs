@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- meta information -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <!-- title of webpage -->
+        <title> STADVDB </title>
+
+        <!-- css files -->
+        <link rel="stylesheet" type="text/css" href="../css/global.css">
+        <link rel="stylesheet" type="text/css" href="../css/movie.css">
+
+        <!-- Font Awesome icon library -->
+        <script src="https://kit.fontawesome.com/77b56ec5f8.js" crossorigin="anonymous"></script>
+
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- scripts -->
+        <!--
+        <script type="text/javascript" src="./js/movie.js"></script>
+        -->
+    </head>
+
+    <body>
+        <h1 class="section-header">{{name}}</h1>
+        <div id="main-body">
+            <p>Year: {{year}}</p>
+            <p>Rank: {{rank}}</p>
+            <p>Genres: {{#each genres}}{{this}}, {{/each}}</p>
+            <p>Directed by: {{#each directors}}{{this}}, {{/each}}</p>
+            <h2 class="section-header">Roles</h2>
+            <div id="actors-box">
+                <table id="actors-records">
+                    <thead>
+                        <tr>
+                            <th>Actor Name</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each actors}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td>{{role}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
