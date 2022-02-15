@@ -1,3 +1,4 @@
+const e = require("express");
 const { query } = require("express");
 const res = require("express/lib/response");
 const async = require("hbs/lib/async");
@@ -6,14 +7,10 @@ const db = {
     connect: function(conn, servername) {
         conn.connect(
             function (err) { 
-            if (err) { 
-                console.log("!!! Cannot connect !!! Error:");
-                throw err;
-            }
+            if (err)
+                console.log('<db.connect> Could not connect to [' + servername + ']');
             else
-            {
-               console.log("Connection to " + servername + " established.");
-            }
+               console.log('<db.connect> Connection to [' + servername + '] established');
         });
     },
 
@@ -23,20 +20,20 @@ const db = {
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
-                console.log('find: Starting transaction.');
+                console.log('<db.find> Starting transaction');
                 return conn('SELECT * FROM ' + tablename + ' WHERE ' + conditions + ' FOR SHARE');
             })
             .then((res) => {
                 result = res;
-                console.log('find: Found ' + result.length + ' row(s).');
+                console.log('<db.find> Found ' + result.length + ' row(s)');
                 return conn('COMMIT')
             })
             .then((res) => {
-                console.log('find: Committing transaction.');
+                console.log('<db.find> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('find: Error - ', err);
+                console.error('<db.find> Error - ', err);
                 return reject(err);
             });
         });
@@ -48,20 +45,20 @@ const db = {
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
-                console.log('findAll: Starting transaction.');
+                console.log('<db.findAll> Starting transaction');
                 return conn('SELECT * FROM ' + tablename + ' FOR SHARE');
             })
             .then((res) => {
                 result = res;
-                console.log('findAll: Found ' + result.length + ' row(s).');
+                console.log('<db.findAll> Found ' + result.length + ' row(s)');
                 return conn('COMMIT')
             })
             .then((res) => {
-                console.log('findAll: Committing transaction.');
+                console.log('<db.findAll> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('findAll: Error - ', err);
+                console.error('<db.findAll> Error - ', err);
                 return reject(err);
             });
         });
@@ -73,21 +70,95 @@ const db = {
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
-                console.log('insert: Start Transaction');
+                console.log('<db.insert> Starting transaction');
                 return conn('INSERT INTO ' + tablename + ' VALUES (' + values + ')');
             })
             .then((res) => {
                 result = res;
-                console.log('insert: Inserted ' + result.affectedRows + ' row(s).');
+                console.log('<db.insert> Inserted ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
             .then((res) => {
-                console.log('insert: Committing transaction');
+                console.log('<db.insert> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('insert: Error - ', err);
+                console.error('<db.insert> Error - ', err);
                 return reject(err);
+            });
+        });
+    },
+
+    insertTwoNodes: async(conn, conn2, tablename, values) => {
+        var result1, result2;
+        var transact1 = false, transact2 = false;
+        
+        return new Promise((resolve, reject) => {
+            // Start transaction for Node 1
+            conn('START TRANSACTION')
+            .then((res) => {
+                transact1 = true;
+                console.log('<db.insert> Starting transaction 1');
+                return conn('INSERT INTO ' + tablename + ' VALUES (' + values + ')');
+            })
+            // Attempt to insert to Node 1
+            .then((res) => {
+                result1 = res;
+                console.log('<db.insert> Inserted ' + result1.affectedRows + ' row(s)');
+                // If Node 1 was not updated, do a rollback
+                if(result1.affectedRows == 0)
+                    throw new Error();
+                // If Node 1 was updated, start a transaction for Node 2
+                else {
+                    // Start transaction for Node 2
+                    return conn2('START TRANSACTION')
+                    .then((res) => {
+                        transact2 = true;
+                        console.log('<db.insert> Starting transaction 2');
+                        return conn2('INSERT INTO ' + tablename + ' VALUES (' + values + ')');
+                    })
+                    // Attempt to insert to Node 2
+                    .then((res) => {
+                        result2 = res;
+                        console.log('<db.insert> Inserted ' + result2.affectedRows + ' row(s)');
+                        // If Node 2 was not updated, do a rollback
+                        if(result2.affectedRows == 0)
+                            throw new Error();
+                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        else {
+                            // Commit updates to Node 1
+                            return conn('COMMIT')
+                            .then((res) => {
+                                console.log('<db.insert> Committing transaction 1');
+                                return conn2('COMMIT');
+                            })
+                            // Commit updates to Node 2
+                            .then((res) => {
+                                console.log('<db.insert> Committing transaction 2');
+                                var result = [result1, result2];
+                                return resolve(result);
+                            })
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('<db.insert> Error - transaction 2 wrote 0 records');
+                        return conn('ROLLBACK');
+                    })
+                    // Rollback changes to Node 2
+                    .then((res) => {
+                        console.log('<db.insert> Rolling back transaction 2');
+                        return reject(new Error());
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error('<db.insert> Error - transaction 1 wrote 0 records');
+                return conn('ROLLBACK');
+            })
+            // Rollback changes to Node 1
+            .then((res) => {
+                console.log('<db.insert> Rolling back transaction 1');
+                return reject(new Error());
             });
         });
     },
@@ -101,21 +172,98 @@ const db = {
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
-                console.log('update: Start Transaction');
+                console.log('<db.update> Starting transaction');
                 return conn('UPDATE ' + tablename + ' SET ' + query + ' WHERE ' + conditions);
             })
             .then((res) => {
                 result = res;
-                console.log('Updated ' + result.affectedRows + ' row(s).');
+                console.log('<db.update> Updated ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
             .then((res) => {
-                console.log('update: Committing transaction.');
+                console.log('<db.update> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('update: Error - ', err);
+                console.error('<db.update> Error - ', err);
                 return reject(err);
+            });
+        });
+    },
+
+    updateTwoNodes: async(conn, conn2, tablename, columns, values, conditions) => {
+        var result1, result2;
+        var transact1 = false, transact2 = false;
+        var query = columns[0] + '="' + values[0] + '"';
+        for (var i = 1; i < columns.length; i++)
+            query += ", " + columns[i] + '="' + values[i] + '"';
+
+        return new Promise((resolve, reject) => {
+            // Start transaction for Node 1
+            conn('START TRANSACTION')
+            .then((res) => {
+                transact1 = true;
+                console.log('<db.update> Starting transaction 1');
+                return conn('UPDATE ' + tablename + ' SET ' + query + ' WHERE ' + conditions);
+            })
+            // Attempt to update Node 1
+            .then((res) => {
+                result1 = res;
+                console.log('<db.update> Updated ' + result1.affectedRows + ' row(s)');
+                // If Node 1 was not updated, do a rollback
+                if(result1.affectedRows == 0)
+                    throw new Error();
+                // If Node 1 was updated, start a transaction for Node 2
+                else {
+                    // Start transaction for Node 2
+                    return conn2('START TRANSACTION')
+                    .then((res) => {
+                        transact2 = true;
+                        console.log('<db.update> Starting transaction 2');
+                        return conn2('UPDATE ' + tablename + ' SET ' + query + ' WHERE ' + conditions);
+                    })
+                    // Attempt to update Node 2
+                    .then((res) => {
+                        result2 = res;
+                        console.log('<db.update> Updated ' + result2.affectedRows + ' row(s)');
+                        // If Node 2 was not updated, do a rollback
+                        if(result2.affectedRows == 0)
+                            throw new Error();
+                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        else {
+                            // Commit updates to Node 1
+                            return conn('COMMIT')
+                            .then((res) => {
+                                console.log('<db.update> Committing transaction 1');
+                                return conn2('COMMIT');
+                            })
+                            // Commit updates to Node 2
+                            .then((res) => {
+                                console.log('<db.update> Committing transaction 2');
+                                var result = [result1, result2];
+                                return resolve(result);
+                            })
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('<db.update> Error - transaction 2 modified 0 records');
+                        return conn('ROLLBACK');
+                    })
+                    // Rollback changes to Node 2
+                    .then((res) => {
+                        console.log('<db.update> Rolling back transaction 2');
+                        return reject(new Error());
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error('<db.update> Error - transaction 1 modified 0 records');
+                return conn('ROLLBACK');
+            })
+            // Rollback changes to Node 1
+            .then((res) => {
+                console.log('<db.update> Rolling back transaction 1');
+                return reject(new Error());
             });
         });
     },
@@ -124,21 +272,93 @@ const db = {
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
-                console.log('delete: Start Transaction');
+                console.log('<db.delete> Starting transaction');
                 return conn('DELETE FROM ' + tablename + ' WHERE ' + conditions);
             })
             .then((res) => {
                 result = res;
-                console.log('Deleted ' + result.affectedRows + ' row(s).');
+                console.log('<db.delete> Deleted ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
             .then((res) => {
-                console.log('delete: Committing transaction.');
+                console.log('<db.delete> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('delete: Error - ', err);
+                console.error('<db.delete> Error - ', err);
                 return reject(err);
+            });
+        });
+    },
+
+    deleteTwoNodes: async(conn, conn2, tablename, conditions) => {
+        var result1, result2;
+        var transact1 = false, transact2 = false;
+        return new Promise((resolve, reject) => {
+            // Start transaction for Node 1
+            conn('START TRANSACTION')
+            .then((res) => {
+                transact1 = true
+                console.log('<db.delete> Starting transaction 1');
+                return conn('DELETE FROM ' + tablename + ' WHERE ' + conditions);
+            })
+            // Attempt to delete from Node 1
+            .then((res) => {
+                result1 = res;
+                console.log('<db.delete> Deleted ' + result1.affectedRows + ' row(s)');
+                // If Node 1 was not updated, do a rollback
+                if(result1.affectedRows == 0)
+                    throw new Error();
+                // If Node 1 was updated, start a transaction for Node 2
+                else {
+                    // Start transaction for Node 2
+                    return conn2('START TRANSACTION')
+                    .then((res) => {
+                        transact2 = true
+                        console.log('<db.delete> Starting transaction 2');
+                        return conn2('DELETE FROM ' + tablename + ' WHERE ' + conditions);
+                    })
+                    // Attempt to delete from Node 2
+                    .then((res) => {
+                        result2 = res;
+                        console.log('<db.delete> Deleted ' + result2.affectedRows + ' row(s)');
+                        // If Node 2 was not updated, do a rollback
+                        if(result2.affectedRows == 0)
+                            throw new Error();
+                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        else {
+                            // Commit updates to Node 1
+                            return conn('COMMIT')
+                            .then((res) => {
+                                console.log('<db.delete> Committing transaction 1');
+                                return conn2('COMMIT');
+                            })
+                            // Commit updates to Node 2
+                            .then((res) => {
+                                console.log('<db.delete> Committing transaction 2');
+                                return resolve(result);
+                            })
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('<db.delete> Error - transaction 2 modified 0 records');
+                        return conn('ROLLBACK');
+                    })
+                    // Rollback changes to Node 2
+                    .then((res) => {
+                        console.log('<db.delete> Rolling back transaction 2');
+                        return reject(new Error());
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error('<db.delete> Error - transaction 1 modified 0 records');
+                return conn('ROLLBACK');
+            })
+            // Rollback changes to Node 1
+            .then((res) => {
+                console.log('<db.insert> Rolling back transaction 1');
+                return reject(new Error());
             });
         });
     }

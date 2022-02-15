@@ -36,7 +36,7 @@ $(document).ready(function() {
     });
 
     $('#delete-movie-btn').on('click', function() {
-        document.location.href = document.location.href + '/delete';
+        $.get('' + document.location.href + '/delete', {year: $('#movie-year').text().trim().slice(6)});
     });
 });
 
