@@ -1,10 +1,44 @@
 $(document).ready(function() {
-    $('#random-movie-btn').on('click', function() {
-        window.location.href = '/movie/1';
-    });
-
     $('#search-movie-btn').on('click', function() {
         var id = $('#movie-id').val().trim();
-        window.location.href = '/movie/' + id;
+        if(id != '')
+            window.location.href = '/movie/' + id;
+        else
+           window.location.href = '/';
+    });
+
+    $('#add-movie').on('keyup', function() {
+        var valid = true;
+        var errorMessage = '&nbsp';
+
+        if($('#add-id').val().trim() == '' ||
+            $('#add-name').val().trim() == '' ||
+            $('#add-year').val().trim() == '' ||
+            $('#add-rank').val().trim() == '' ||
+            $('#add-genre').val().trim() == '' ||
+            $('#add-director').val().trim() == '' ||
+            $('#add-actor1').val().trim() == '' ||
+            $('#add-actor2').val().trim() == '') {
+                errorMessage = 'Form incomplete.'
+                valid = false;
+            }
+            
+        $('#add-movie-error-msg').html(errorMessage);
+        if(valid)
+            setEnabled($("#add-movie-btn"));
+        else
+            setDisabled($("#add-movie-btn"));
     });
 });
+
+function setEnabled (element) {
+	$(element).prop("disabled", false);
+	$(element).removeClass("clickable-disabled");
+	$(element).addClass("clickable");
+}
+
+function setDisabled (element) {
+	$(element).prop("disabled", true);
+	$(element).removeClass("clickable");
+	$(element).addClass("clickable-disabled");
+}

@@ -25,33 +25,72 @@
 
     <body>
         <div id="main-body">
-            <div id="movies-ids">
-                <div id="id-input">
-                    <input type="number" id="movie-id">
-                    <button id="search-movie-btn">
-                        Search
-                    </button>
-                    <button id="random-movie-btn">
-                        Random Movie
-                    </button>
-                </div>
-                <div class="id-box">
-                    <table class="id-box-records">
-                        <thead>
-                            <tr>
-                                <th>Movie Name</th>
-                                <th>ID</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each movieIds}}
+            <div id="top-half">
+                <div id="movies-ids">
+                    <div id="id-input">
+                        <input type="number" id="movie-id" placeholder="Enter a movie ID">
+                        <button id="search-movie-btn">
+                            Search
+                        </button>
+                    </div>
+                    <div class="id-box">
+                        <table class="id-box-records">
+                            <thead>
                                 <tr>
-                                    <td>{{title}}</td>
-                                    <td>{{id}}</td>
+                                    <th>Movie Name</th>
+                                    <th>ID</th>
                                 </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {{#each movieIds}}
+                                    <tr>
+                                        <td>{{title}}</td>
+                                        <td>{{id}}</td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="add-movie-box">
+                    <h2 class="section-header">Add a Movie</h2>
+                    <form id="add-movie" name="add-movie" action="/addMovie" method="post" autocomplete="off">
+                        <div>
+                            <div>
+                                <label for="add-id">ID</label>
+                                <input type="number" id="add-id" name="addId">
+                            </div>
+
+                            <div>
+                                <label for="add-year">Year</label>
+                                <input type="number" id="add-year" name="addYear">
+                            </div>
+
+                            <div>
+                                <label for="add-rank">Rank</label>
+                                <input type="number" id="add-rank" name="addRank">
+                            </div>
+                        </div>
+
+                        <label for="add-name">Title</label>
+                        <input id="add-name" name="addName">
+
+                        <label for="add-genre">Genre</label>
+                        <input id="add-genre" name="addGenre">
+
+                        <label for="add-director">Director</label>
+                        <input id="add-director" name="addDirector">
+
+                        <label for="add-actor1">Actor 1</label>
+                        <input id="add-actor1" name="addActor1">
+
+                        <label for="add-actor2">Actor 2</label>
+                        <input id="add-actor2" name="addActor2">
+
+                        <button id="add-movie-btn" type="submit" disabled>Add Movie</button>
+                        <span id="add-movie-error-msg"></span>
+                    </form>
                 </div>
             </div>
         </div>

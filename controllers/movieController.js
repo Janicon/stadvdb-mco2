@@ -24,8 +24,28 @@ const controller = {
     
             res.render('movie', details);
         } catch (err) {
+            console.log('movieController: Error - DB Fetch.');
             res.redirect('/');
         }            
+    },
+
+    addMovie: async(req, res) => {
+        var values = req.body.addId + ', '
+            + req.body.addName + ', '
+            + req.body.addYear + ', '
+            + req.body.addRank + ', '
+            + req.body.addGenre + ', '
+            + req.body.addDirector + ', '
+            + req.body.addActor1 + ', '
+            + req.body.addActor2;
+
+        try {
+            //var result = await db.insert(connections.node1p, 'den_imdb', values);
+            res.redirect('/movie/' + req.body.addId);
+        } catch (err) {
+            console.log('movieController: Error - DB Insert.');
+            res.redirect('/');
+        }
     }
 }
 

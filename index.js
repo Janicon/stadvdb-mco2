@@ -1,6 +1,7 @@
 const routes = require('./routes/routes.js');
 const dotenv = require('dotenv');
 const express = require('express');
+const bodyParser = require('body-parser');
 const connections = require('./db/connections.js');
 const db = require('./db/db.js');
 //const hbs = require('hbs');
@@ -13,7 +14,11 @@ dotenv.config();
 port = process.env.PORT;
 hostname = process.env.HOSTNAME;
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static(__dirname + '/public'));
+
 app.use('/', routes);
 
 db.connect(connections.test, 'Test server');

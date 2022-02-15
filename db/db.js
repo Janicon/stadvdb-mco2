@@ -1,5 +1,6 @@
 const { query } = require("express");
 const res = require("express/lib/response");
+const async = require("hbs/lib/async");
 
 const db = {
     connect: function(conn, servername) {
@@ -15,35 +16,6 @@ const db = {
             }
         });
     },
-    
-    testTransaction: function(conn) {
-        console.log('Starting transaction');
-        conn.query("START TRANSACTION", () => {
-            console.log('Starting insert');
-            conn.query('INSERT INTO users VALUE (0, "UserFirst", "UserLast")', () => {
-                console.log('Rolling back');
-                conn.query('COMMIT');
-            });
-        });
-    },
-    
-    /*
-    find: function(conn, tablename, conditions, callback) {
-        conn.query('SELECT * FROM ' + tablename + ' WHERE ' + conditions,
-            function (err, results, fields) {
-                if (err) return callback(null);
-                //if (err) throw err;
-                else console.log('Found ' + results.length + ' row(s).');
-                return callback(results);
-            })
-        conn.end(
-            function (err) { 
-                if (err) return callback(null);
-                //if (err) throw err;
-                else  console.log('Closing connection.') 
-        });
-    },
-    */
 
     find: async(conn, tablename, conditions) => {
         var result;
@@ -52,7 +24,7 @@ const db = {
             conn('START TRANSACTION')
             .then((res) => {
                 console.log('find: Starting transaction.');
-                return conn('SELECT * FROM ' + tablename + ' WHERE ' + conditions);
+                return conn('SELECT * FROM ' + tablename + ' WHERE ' + conditions + ' FOR SHARE');
             })
             .then((res) => {
                 result = res;
@@ -69,31 +41,6 @@ const db = {
             });
         });
     },
-    
-    /*
-    findAll: function(conn, tablename, callback) {
-        conn.query('SELECT * FROM ' + tablename,
-            function (err, results, fields) {
-                if (err) return callback(null);
-                //if (err) throw err;
-                else console.log('Found ' + results.length + ' row(s).');
-                return callback(results);
-        });
-    },
-
-    findAll: function(conn, tablename) {
-        return new Promise((resolve, reject) => {
-            conn.query('SELECT * FROM ' + tablename, (error, result) => {
-                if(error)
-                    return reject(error);
-                else {
-                    console.log('Found ' + result.length + ' row(s).');
-                    return resolve(result);
-                }
-            });
-        });
-    },
-    */
 
     findAll: async(conn, tablename) => {
         var result;
@@ -102,7 +49,7 @@ const db = {
             conn('START TRANSACTION')
             .then((res) => {
                 console.log('findAll: Starting transaction.');
-                return conn('SELECT * FROM ' + tablename);
+                return conn('SELECT * FROM ' + tablename + ' FOR SHARE');
             })
             .then((res) => {
                 result = res;
@@ -119,6 +66,59 @@ const db = {
             });
         });
     },
+
+    insert: async(conn, tablename, values) => {
+        var result;
+        
+        return new Promise((resolve, reject) => {
+            conn('START TRANSACTION')
+            .then((res) => {
+                console.log('insert: Start Transaction');
+                return conn('INSERT INTO ' + tablename + ' VALUES (' + values + ')');
+            })
+            .then((res) => {
+                result = res;
+                console.log('insert: Inserted ' + result.affectedRows + ' row(s).');
+                return conn('COMMIT');
+            })
+            .then((res) => {
+                console.log('insert: Committing transaction');
+                return resolve(result);
+            })
+            .catch((err) => {
+                console.error('insert: Error - ', err);
+                return reject(err);
+            });
+        });
+    },
+
+    update: async(conn, tablename, columns, values, conditions, callback) => {
+        var result;
+        var query = '';
+        for (var i in columns)
+            query += columns[i] + '=' + values[i];
+
+        return new Promise((resolve, reject) => {
+            conn('START TRANSACTION')
+            .then((res) => {
+                console.log('update: Start Transaction');
+                return conn('UPDATE ' + tablename + ' SET ' + query + ' WHERE ' + conditions);
+            })
+            .then((res) => {
+                result = res;
+                console.log('Updated ' + result.affectedRows + ' row(s).');
+                return conn('COMMIT');
+            })
+            .then((res) => {
+                console.log('update: Committing transaction.');
+                return resolve(result);
+            })
+            .catch((err) => {
+                console.error('update: Error - ', err);
+                return reject(err);
+            });
+        });
+    }
     
     /*
     findCount: function(conn, tablename, callback) {
