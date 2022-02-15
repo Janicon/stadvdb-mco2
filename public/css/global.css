@@ -21,6 +21,7 @@ h1, h2, h3, h4, p {
 }
 
 .section-header {
+    margin-bottom: 8px;
     padding: 8px 16px 4px 16px;
     border-bottom: 1px solid white;
 }
@@ -50,9 +51,6 @@ h1, h2, h3, h4, p {
   }
 
 .clickable {
-    border: 0;
-    box-shadow: 1px 2px 2px #555555;
-    text-align: center;
     cursor: pointer;
 }
 .clickable:hover {
@@ -60,10 +58,4 @@ h1, h2, h3, h4, p {
 }
 .clickable:active {
     filter: brightness(75%);
-}
-.clickable-disabled {
-    border: 0;
-    text-align: center;
-    filter: brightness(75%);
-    color: #616161;
 }

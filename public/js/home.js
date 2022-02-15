@@ -2,9 +2,9 @@ $(document).ready(function() {
     $('#search-movie-btn').on('click', function() {
         var id = $('#movie-id').val().trim();
         if(id != '')
-            window.location.href = '/movie/' + id;
+            document.location.href = '/movie/' + id;
         else
-           window.location.href = '/';
+            document.location.href = '/';
     });
 
     $('#add-movie').on('keyup', function() {
@@ -33,12 +33,10 @@ $(document).ready(function() {
 
 function setEnabled (element) {
 	$(element).prop("disabled", false);
-	$(element).removeClass("clickable-disabled");
 	$(element).addClass("clickable");
 }
 
 function setDisabled (element) {
 	$(element).prop("disabled", true);
 	$(element).removeClass("clickable");
-	$(element).addClass("clickable-disabled");
 }
