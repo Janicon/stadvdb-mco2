@@ -61,11 +61,11 @@ const db = {
             })
             .then((res) => {
                 console.log('find: Committing transaction.');
-                return resolve(err);
+                return resolve(result);
             })
             .catch((err) => {
                 console.error('find: Error - ', err);
-                return reject(null);
+                return reject(err);
             });
         });
     },
