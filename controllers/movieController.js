@@ -25,7 +25,6 @@ const controller = {
             page_content.actors.push({name, role});
         }
 
-        console.log(page_content);
         res.render('movie', page_content);
     }
 }

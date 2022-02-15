@@ -28,7 +28,7 @@ const controller = {
             page_content.movieIds.push({name, id});
         }
 
-        res.render('index', page_content);
+        res.render('home', page_content);
     }
 }
 
