@@ -20,7 +20,8 @@ const controller = {
                 rank: result[0].rank,
                 genre: result[0].genre,
                 director: result[0].director,
-                actors: [result[0].actor1, result[0].actor2]
+                actor1: result[0].actor1,
+                actor2: result[0].actor2
             }
     
             res.render('movie', details);
