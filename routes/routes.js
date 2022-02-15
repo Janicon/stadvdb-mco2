@@ -12,7 +12,11 @@ app.post('/addMovie', movieController.addMovie);
 app.post('/movie/:id/edit', movieController.editMovie);
 app.get('/movie/:id/delete', movieController.deleteMovie);
 
-app.get('/test', testController.getUsers);
-app.get('/test/:id', testController.getUser);
+app.get('/users', testController.getUsers);
+app.get('/users/:id', testController.getUser);
+app.get('/addUser', testController.addUser);
+
+app.get('/empty', mainController.getError);
+app.get('*', mainController.getError);
 
 module.exports = app;

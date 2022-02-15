@@ -26,8 +26,7 @@ const controller = {
     
             res.render('movie', details);
         } catch (err) {
-            console.log('movieController: Error - DB Fetch.');
-            res.redirect('/');
+            res.redirect('/error');
         }            
     },
 

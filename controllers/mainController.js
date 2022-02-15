@@ -28,6 +28,16 @@ const controller = {
         }
         
         res.render('home', {movieIds: movielist});
+    },
+
+    getEmpty: function(req, res) {
+        res.status('204');
+        res.render('empty');
+    },
+
+    getError: function(req, res) {
+        res.status('404');
+        res.render('error');
     }
 }
 
