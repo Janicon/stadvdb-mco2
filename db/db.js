@@ -118,6 +118,29 @@ const db = {
                 return reject(err);
             });
         });
+    },
+
+    delete: async(conn, tablename, conditions) => {
+        return new Promise((resolve, reject) => {
+            conn('START TRANSACTION')
+            .then((res) => {
+                console.log('delete: Start Transaction');
+                return conn('DELETE FROM ' + tablename + ' WHERE ' + conditions);
+            })
+            .then((res) => {
+                result = res;
+                console.log('Deleted ' + result.affectedRows + ' row(s).');
+                return conn('COMMIT');
+            })
+            .then((res) => {
+                console.log('delete: Committing transaction.');
+                return resolve(result);
+            })
+            .catch((err) => {
+                console.error('delete: Error - ', err);
+                return reject(err);
+            });
+        });
     }
     
     /*

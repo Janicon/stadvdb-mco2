@@ -24,7 +24,7 @@
     </head>
 
     <body>
-        <h1 class="section-header">{{name}}</h1>
+        <h1 id="movie-name" class="section-header">{{name}}</h1>
         <div id="main-body">
             <p>Year: {{year}}</p>
             <p>Rank: {{rank}}</p>
@@ -64,6 +64,10 @@
                 <button id="edit-movie-btn" class="noselect" type="submit" disabled>Edit Movie</button>
                 <span id="edit-movie-error-msg"></span>
             </form>
+            <h2 class="section-header">Delete Movie</h2>
+            <p>Enter the movie title (<code>{{name}}</code>) to confirm delete.</p>
+            <input id="delete-movie">
+            <button id="delete-movie-btn" disabled>Delete</button>
         </div>
     </body>
 </html>

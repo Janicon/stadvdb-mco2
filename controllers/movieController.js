@@ -91,6 +91,18 @@ const controller = {
             console.log('movieController: Error - DB Insert.');
             res.redirect('/');
         }
+    },
+
+    deleteMovie: async(req, res) => {
+        var conditions = 'id=' + req.params.id;
+
+        try {            
+            var result = await db.delete(connections.testp, 'users', conditions);
+            //var result = await db.insert(connections.testp, 'users', query);
+            res.redirect('/');
+        } catch(err) {
+            res.redirect('/movie/' + req.params.id);
+        }
     }
 }
 

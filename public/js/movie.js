@@ -20,16 +20,32 @@ $(document).ready(function() {
         else
             setDisabled($("#edit-movie-btn"));
     });
+
+    $('#delete-movie').on('keyup', function() {
+        var ref = $('#movie-name').text().trim();
+        var cmp = $('#delete-movie').val();
+
+        if(cmp != '') {
+            if(ref == cmp)
+                setEnabled($('#delete-movie-btn'));
+            else
+                setDisabled($('#delete-movie-btn'));
+        }
+        else
+            setDisabled($('#delete-movie-btn'));
+    });
+
+    $('#delete-movie-btn').on('click', function() {
+        document.location.href = document.location.href + '/delete';
+    });
 });
 
 function setEnabled (element) {
 	$(element).prop("disabled", false);
-	$(element).removeClass("clickable-disabled");
 	$(element).addClass("clickable");
 }
 
 function setDisabled (element) {
 	$(element).prop("disabled", true);
 	$(element).removeClass("clickable");
-	$(element).addClass("clickable-disabled");
 }
