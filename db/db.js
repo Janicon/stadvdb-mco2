@@ -92,11 +92,11 @@ const db = {
         });
     },
 
-    update: async(conn, tablename, columns, values, conditions, callback) => {
+    update: async(conn, tablename, columns, values, conditions) => {
         var result;
-        var query = '';
-        for (var i in columns)
-            query += columns[i] + '=' + values[i];
+        var query = columns[0] + '="' + values[0] + '"';
+        for (var i = 1; i < columns.length; i++)
+            query += ", " + columns[i] + '="' + values[i] + '"';
 
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')

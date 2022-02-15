@@ -9,6 +9,7 @@ app.get('/favicon.ico', mainController.getFavicon);
 app.get('/', mainController.getBlank);
 app.get('/movie/:id', movieController.getMovie);
 app.post('/addMovie', movieController.addMovie);
+app.post('/movie/:id/edit', movieController.editMovie);
 
 app.get('/test', testController.getUsers);
 app.get('/test/:id', testController.getUser);

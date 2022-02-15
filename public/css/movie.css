@@ -1,32 +1,47 @@
-#actors-box {
-    width: 50%;
-    height: 320px;
-    overflow-y: scroll;
-    border: 1px solid white;
-    text-align: left;
-    padding: 0px 8px;
+#edit-movie-box {
+    width: calc(40% - 1px);
+    border-left: 1px solid white;
 }
 
-#actors-records {
-    width: 100%;
-    border-collapse: collapse;
+#edit-movie {
+    padding: 16px 8px;
 }
 
-#actors-records tr {
-    margin-bottom: 4px;
+#edit-movie > div {
+    display: flex;
+    flex-direction: row;
+    width: 60%;
+    margin-bottom: 8px;
 }
 
-#actors-records th {
-    position: sticky;
-    top: 0;
-    padding: 0;
-    background-color: #202324;
+#edit-movie > div > div {
+    margin-right: 0px 16px;
 }
 
-#actors-records td {
-    padding: 0;
+#edit-movie > div, #edit-movie > input {
+    width: 30%;
 }
 
-#actors-records td:nth-child(1) {
-    width: 75%;
+#edit-movie > label {
+    display: block;
+}
+
+#edit-movie > input {
+    display: block;
+    width: 60%;
+    margin-bottom: 8px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input:focus {
+    outline: none;
+}
+
+#edit-movie-error-msg {
+    color: red;
 }

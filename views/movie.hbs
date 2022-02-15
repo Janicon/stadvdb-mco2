@@ -20,9 +20,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <!-- scripts -->
-        <!--
-        <script type="text/javascript" src="./js/movie.js"></script>
-        -->
+        <script type="text/javascript" src="../js/movie.js"></script>
     </head>
 
     <body>
@@ -33,6 +31,39 @@
             <p>Genres: {{genre}}</p>
             <p>Directed by: {{director}}</p>
             <p>Actors: {{#each actors}}{{this}}, {{/each}}</p>
+            <div class="h-spacer"></div>
+            <h2 class="section-header">Edit Movie</h2>
+            <form id="edit-movie" name="edit-movie" action="/movie/{{id}}/edit" method="post" autocomplete="off">
+                <div>
+                    <div>
+                        <label for="edit-year">Year</label>
+                        <input type="number" id="edit-year" name="editYear">
+                    </div>
+
+                    <div>
+                        <label for="edit-rank">Rank</label>
+                        <input type="number" id="edit-rank" name="editRank">
+                    </div>
+                </div>
+
+                <label for="edit-name">Title</label>
+                <input id="edit-name" name="editName">
+
+                <label for="edit-genre">Genre</label>
+                <input id="edit-genre" name="editGenre">
+
+                <label for="edit-director">Director</label>
+                <input id="edit-director" name="editDirector">
+
+                <label for="edit-actor1">Actor 1</label>
+                <input id="edit-actor1" name="editActor1">
+
+                <label for="edit-actor2">Actor 2</label>
+                <input id="edit-actor2" name="editActor2">
+
+                <button id="edit-movie-btn" class="noselect" type="submit" disabled>Edit Movie</button>
+                <span id="edit-movie-error-msg"></span>
+            </form>
         </div>
     </body>
 </html>
