@@ -40,7 +40,7 @@ const controller = {
             + req.body.addActor2;
 
         try {
-            //var result = await db.insert(connections.node1p, 'den_imdb', values);
+            var result = await db.insert(connections.node1p, 'den_imdb', values);
             res.redirect('/movie/' + req.body.addId);
         } catch (err) {
             console.log('movieController: Error - DB Insert.');
