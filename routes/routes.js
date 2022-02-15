@@ -9,7 +9,13 @@ app.get('/favicon.ico', mainController.getFavicon);
 app.get('/', mainController.getIndex);
 app.get('/movie/:id', movieController.getMovie);
 
-app.get('/test', testController.getUsers, testController.load);
+app.get('/test', testController.getUsers);
+app.get('/test/:id', testController.getUser);
 app.get('/test/addUser', testController.addUser);
+/*
+app.get('/test/findCount', testController.findCount);
+app.get('/test/testTransaction', testController.testTransaction);
+app.get('/users', testController.loadPage);
+*/
 
 module.exports = app;

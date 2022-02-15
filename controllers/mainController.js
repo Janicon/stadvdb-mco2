@@ -1,34 +1,33 @@
+const async = require('hbs/lib/async');
+const connections = require('../db/connections.js');
+const db = require('../db/db.js');
+
 const controller = {
     getFavicon: function (req, res) {
         res.status(204);
     },
 
-    getIndex: function(req, res) {
-        var page_content = {
-            actorIds: [],
-            directorIds: [],
-            movieIds: []
-        }
+    getBlank: function(req, res) {
+        res.render('home',{});
+    },
 
-        for (var i = 0; i < 50; i++) {
-            var name = 'Actor ' + (i + 1);
-            var id = '000' + (i + 1);
-            page_content.actorIds.push({name, id});
-        }
+    getIndex: async(req, res) => {        
+        var result = await db.findAll(connections.node1p, 'den_imdb');
+        var movielist = [];
 
-        for (var i = 0; i < 50; i++) {
-            var name = 'Director ' + (i + 1);
-            var id = '000' + (i + 1);
-            page_content.directorIds.push({name, id});
-        }
+        for (var i in result) {
+            var movie = {
+                title: result[i].name,
+                id: result[i].id
+            };
 
-        for (var i = 0; i < 50; i++) {
-            var name = 'Movie ' + (i + 1);
-            var id = '000' + (i + 1);
-            page_content.movieIds.push({name, id});
+            movielist.push(movie);
+            
+            if (i == 30)
+                break;
         }
-
-        res.render('home', page_content);
+        
+        res.render('home', {movieIds: movielist});
     }
 }
 

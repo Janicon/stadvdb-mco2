@@ -1,6 +1,7 @@
 const routes = require('./routes/routes.js');
 const dotenv = require('dotenv');
 const express = require('express');
+const connections = require('./db/connections.js');
 const db = require('./db/db.js');
 //const hbs = require('hbs');
 
@@ -15,7 +16,10 @@ hostname = process.env.HOSTNAME;
 app.use(express.static(__dirname + '/public'));
 app.use('/', routes);
 
-db.connect();
+db.connect(connections.test, 'Test server');
+db.connect(connections.node1, 'Node 1');
+db.connect(connections.node2, 'Node 2');
+db.connect(connections.node3, 'Node 3');
 
 app.listen(port, hostname, function() {
     console.log('Server is running at:');

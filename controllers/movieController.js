@@ -1,31 +1,31 @@
+const async = require('hbs/lib/async');
+const connections = require('../db/connections.js');
+const db = require('../db/db.js');
+
 const controller = {
     getFavicon: function (req, res) {
         res.status(204);
     },
 
-    getMovie: function(req, res) {
-        var page_content = {
-            name: 'Movie ' + req.params.id,
-            year: (1950 + parseInt(req.params.id)),
-            rank: ((0.5 * req.params.id) % 10 + 0.5),
-            genres: [],
-            directors: [],
-            actors: []
-        };
+    getMovie: async(req, res) => {
+        var id = req.params.id;
+        
+        try {
+            var result = await db.find(connections.node1p, 'den_imdb', 'id=' + id);
 
-        for (var i = 0; i < 10; i++)
-            page_content.genres.push('Genre ' + (i + 1));
-
-        for (var i = 0; i < 5; i++)
-            page_content.directors.push('Director ' + (i + 1));
-
-        for (var i = 0; i < 25; i++) {
-            var name = 'Actor ' + (i + 1);
-            var role = 'Role ' + (i + 1);
-            page_content.actors.push({name, role});
-        }
-
-        res.render('movie', page_content);
+            var details = {
+                name: result[0].name,
+                year: result[0].year,
+                rank: result[0].rank,
+                genre: result[0].genre,
+                director: result[0].director,
+                actors: [result[0].actor1, result[0].actor2]
+            }
+    
+            res.render('movie', details);
+        } catch (err) {
+            res.redirect('/');
+        }            
     }
 }
 

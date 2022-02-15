@@ -25,35 +25,33 @@
 
     <body>
         <div id="main-body">
-            <div id="id-summary">
-                <div id="directors-ids">
-                    <button id="random-director-btn">
-                        Random Director
+            <div id="movies-ids">
+                <div id="id-input">
+                    <input type="number" id="movie-id">
+                    <button id="search-movie-btn">
+                        Search
                     </button>
-                    <div class="id-input">
-                        <input type="number" id="director-id">
-                        <button id="search-director-btn">
-                            Search
-                        </button>
-                    </div>
-                    <div class="id-box">
-                        <table class="id-box-records">
-                            <thead>
+                    <button id="random-movie-btn">
+                        Random Movie
+                    </button>
+                </div>
+                <div class="id-box">
+                    <table class="id-box-records">
+                        <thead>
+                            <tr>
+                                <th>Movie Name</th>
+                                <th>ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each movieIds}}
                                 <tr>
-                                    <th>Director Name</th>
-                                    <th>ID</th>
+                                    <td>{{title}}</td>
+                                    <td>{{id}}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {{#each directorIds}}
-                                    <tr>
-                                        <td>{{name}}</td>
-                                        <td>{{id}}</td>
-                                    </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
+                            {{/each}}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

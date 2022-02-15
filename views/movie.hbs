@@ -30,27 +30,9 @@
         <div id="main-body">
             <p>Year: {{year}}</p>
             <p>Rank: {{rank}}</p>
-            <p>Genres: {{#each genres}}{{this}}, {{/each}}</p>
-            <p>Directed by: {{#each directors}}{{this}}, {{/each}}</p>
-            <h2 class="section-header">Roles</h2>
-            <div id="actors-box">
-                <table id="actors-records">
-                    <thead>
-                        <tr>
-                            <th>Actor Name</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#each actors}}
-                            <tr>
-                                <td>{{name}}</td>
-                                <td>{{role}}</td>
-                            </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-            </div>
+            <p>Genres: {{genre}}</p>
+            <p>Directed by: {{director}}</p>
+            <p>Actors: {{#each actors}}{{this}}, {{/each}}</p>
         </div>
     </body>
 </html>
