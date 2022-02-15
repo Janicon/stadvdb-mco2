@@ -3,13 +3,17 @@ body {
     width: 100%;
     height: 100%;
 	margin: 0;
-    background-color: #202324;
+    background-color: #161922;
     font-family: 'Roboto', sans-serif;
     color: white;
 }
 
 h1, h2, h3, h4, p {
     margin: 0;
+}
+
+.h-spacer {
+    height: 32px;
 }
 
 #main-body {
@@ -33,4 +37,33 @@ h1, h2, h3, h4, p {
 
 ::-webkit-scrollbar-thumb {
     background: #888;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
+
+.clickable {
+    border: 0;
+    box-shadow: 1px 2px 2px #555555;
+    text-align: center;
+    cursor: pointer;
+}
+.clickable:hover {
+    filter: brightness(90%);
+}
+.clickable:active {
+    filter: brightness(75%);
+}
+.clickable-disabled {
+    border: 0;
+    text-align: center;
+    filter: brightness(75%);
+    color: #616161;
 }
