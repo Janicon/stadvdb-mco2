@@ -94,8 +94,8 @@ const db = {
         var transact1 = false, transact2 = false;
         
         return new Promise((resolve, reject) => {
-            // Start transaction for Node 1
             conn('START TRANSACTION')
+            // Start transaction for Node 1
             .then((res) => {
                 transact1 = true;
                 console.log('<db.insert> Starting transaction 1');
@@ -108,10 +108,15 @@ const db = {
                 // If Node 1 was not updated, do a rollback
                 if(result1.affectedRows == 0)
                     throw new Error();
-                // If Node 1 was updated, start a transaction for Node 2
+                // If Node 1 was updated, commit
                 else {
+                    return conn('COMMIT')
+                    // Commit updates to Node 1
+                    .then((res) => {
+                        console.log('<db.insert> Committing transaction 1');
+                        return conn2('START TRANSACTION')
+                    })
                     // Start transaction for Node 2
-                    return conn2('START TRANSACTION')
                     .then((res) => {
                         transact2 = true;
                         console.log('<db.insert> Starting transaction 2');
@@ -124,14 +129,9 @@ const db = {
                         // If Node 2 was not updated, do a rollback
                         if(result2.affectedRows == 0)
                             throw new Error();
-                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        // If Node 2 was updated, commit
                         else {
-                            // Commit updates to Node 1
-                            return conn('COMMIT')
-                            .then((res) => {
-                                console.log('<db.insert> Committing transaction 1');
-                                return conn2('COMMIT');
-                            })
+                            return conn2('COMMIT')
                             // Commit updates to Node 2
                             .then((res) => {
                                 console.log('<db.insert> Committing transaction 2');
@@ -168,7 +168,6 @@ const db = {
         var query = columns[0] + '="' + values[0] + '"';
         for (var i = 1; i < columns.length; i++)
             query += ", " + columns[i] + '="' + values[i] + '"';
-
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
@@ -199,8 +198,8 @@ const db = {
             query += ", " + columns[i] + '="' + values[i] + '"';
 
         return new Promise((resolve, reject) => {
-            // Start transaction for Node 1
             conn('START TRANSACTION')
+            // Start transaction for Node 1
             .then((res) => {
                 transact1 = true;
                 console.log('<db.update> Starting transaction 1');
@@ -213,10 +212,15 @@ const db = {
                 // If Node 1 was not updated, do a rollback
                 if(result1.affectedRows == 0)
                     throw new Error();
-                // If Node 1 was updated, start a transaction for Node 2
+                // If Node 1 was updated, commit
                 else {
+                    // Commit updates to Node 1
+                    return conn('COMMIT')
+                    .then((res) => {
+                        console.log('<db.update> Committing transaction 1');
+                        return conn2('START TRANSACTION');
+                    })
                     // Start transaction for Node 2
-                    return conn2('START TRANSACTION')
                     .then((res) => {
                         transact2 = true;
                         console.log('<db.update> Starting transaction 2');
@@ -229,15 +233,10 @@ const db = {
                         // If Node 2 was not updated, do a rollback
                         if(result2.affectedRows == 0)
                             throw new Error();
-                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        // If Node 2 was updated, commit
                         else {
-                            // Commit updates to Node 1
-                            return conn('COMMIT')
-                            .then((res) => {
-                                console.log('<db.update> Committing transaction 1');
-                                return conn2('COMMIT');
-                            })
                             // Commit updates to Node 2
+                            return conn2('COMMIT')
                             .then((res) => {
                                 console.log('<db.update> Committing transaction 2');
                                 var result = [result1, result2];
@@ -295,8 +294,8 @@ const db = {
         var result1, result2;
         var transact1 = false, transact2 = false;
         return new Promise((resolve, reject) => {
-            // Start transaction for Node 1
             conn('START TRANSACTION')
+            // Start transaction for Node 1
             .then((res) => {
                 transact1 = true
                 console.log('<db.delete> Starting transaction 1');
@@ -311,8 +310,13 @@ const db = {
                     throw new Error();
                 // If Node 1 was updated, start a transaction for Node 2
                 else {
+                    // Commit updates to Node 1
+                    return conn('COMMIT')
+                    .then((res) => {
+                        console.log('<db.delete> Committing transaction 1');
+                        return conn2('START TRANSACTION');
+                    })
                     // Start transaction for Node 2
-                    return conn2('START TRANSACTION')
                     .then((res) => {
                         transact2 = true
                         console.log('<db.delete> Starting transaction 2');
@@ -327,13 +331,8 @@ const db = {
                             throw new Error();
                         // If Node 2 was updated, commit changes for Node 1 and 2
                         else {
-                            // Commit updates to Node 1
-                            return conn('COMMIT')
-                            .then((res) => {
-                                console.log('<db.delete> Committing transaction 1');
-                                return conn2('COMMIT');
-                            })
                             // Commit updates to Node 2
+                            return conn2('COMMIT')
                             .then((res) => {
                                 console.log('<db.delete> Committing transaction 2');
                                 return resolve(result);
