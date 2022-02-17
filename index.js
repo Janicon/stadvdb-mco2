@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connections = require('./db/connections.js');
 const db = require('./db/db.js');
-//const hbs = require('hbs');
+const hbs = require('hbs');
 
 const app = express();
 
