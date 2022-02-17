@@ -181,7 +181,6 @@ const controller = {
                 console.log('<movieController> editMovie: Writing to Node 1 and 3');
                 await db.updateTwoNodes(connections.node1p, connections.node3p, 'den_imdb', columns, values, conditions);
             }
-            var result = 
             res.redirect('/movie/' + req.params.id);
         } catch (err) {
             console.log('<movieController> editMovie: Error - DB Update');

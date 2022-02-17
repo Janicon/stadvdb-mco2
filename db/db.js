@@ -308,7 +308,7 @@ const db = {
                 // If Node 1 was not updated, do a rollback
                 if(result1.affectedRows == 0)
                     throw new Error();
-                // If Node 1 was updated, start a transaction for Node 2
+                // If Node 1 was updated, commit
                 else {
                     // Commit updates to Node 1
                     return conn('COMMIT')
@@ -318,7 +318,7 @@ const db = {
                     })
                     // Start transaction for Node 2
                     .then((res) => {
-                        transact2 = true
+                        transact2 = true;
                         console.log('<db.delete> Starting transaction 2');
                         return conn2('DELETE FROM ' + tablename + ' WHERE ' + conditions);
                     })
@@ -329,12 +329,13 @@ const db = {
                         // If Node 2 was not updated, do a rollback
                         if(result2.affectedRows == 0)
                             throw new Error();
-                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        // If Node 2 was updated, commit
                         else {
                             // Commit updates to Node 2
                             return conn2('COMMIT')
                             .then((res) => {
                                 console.log('<db.delete> Committing transaction 2');
+                                var result = [result1, result2];
                                 return resolve(result);
                             })
                         }
