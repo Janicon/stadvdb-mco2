@@ -4,16 +4,6 @@ const connections = require('../db/connections.js');
 const db = require('../db/db.js');
 var crashed = false;
 var n = connections.node1;
-hashCode = function(s) {
-  var hash = 0, i, chr;
-  if (s.length === 0) return hash;
-  for (i = 0; i < s.length; i++) {
-    chr   = s.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
 
 setInterval( function(){
   if (n.state !== 'disconnected') {
