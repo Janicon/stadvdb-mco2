@@ -105,3 +105,63 @@ input:focus {
 #add-movie-error-msg {
     color: red;
 }
+
+#bottom-half {
+    width: calc (100% - 16px);
+    display: flex;
+    flex-direction: row;
+    padding-top: 32px;
+}
+
+#actionButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+}
+
+#actionButtons > button {
+    width: 192px;
+    height: 32px;
+    margin:8px 0;
+}
+
+#report-box {
+    width: 50%;
+    height: 256px;
+    overflow-y: scroll;
+    border: 1px solid white;
+    text-align: left;
+}
+
+#report-box-records {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#report-box-records tr {
+    margin-bottom: 4px;
+}
+
+#report-box-records tr:nth-child(odd) {
+    background-color: #606466;
+}
+
+#report-box-records tr:nth-child(even) {
+    background-color: #333435;
+}
+
+#report-box-records th {
+    position: sticky;
+    top: 0;
+    padding: 0px 8px;
+    background-color: #202324;
+}
+
+#report-box-records td {
+    padding: 0px 8px;
+}
+
+#report-box-records td:nth-child(1) {
+    width: 75%;
+}

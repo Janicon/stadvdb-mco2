@@ -29,7 +29,7 @@
                 <div id="movies-ids">
                     <div id="id-input">
                         <input type="number" id="movie-id" placeholder="Enter a movie ID">
-                        <button id="search-movie-btn">
+                        <button id="search-movie-btn" class="clickable noselect">
                             Search
                         </button>
                         <button id="crash-node1-btn" action="/crashNode1" >
@@ -103,6 +103,42 @@
                         <button id="add-movie-btn" class="noselect" type="submit" disabled>Add Movie</button>
                         <span id="add-movie-error-msg"></span>
                     </form>
+                </div>
+            </div>
+            <div id="bottom-half">
+                <div id="actionButtons">
+                    <h2>Report Generation</h2>
+                    <button id="genre-count-btn" class="clickable noselect">
+                        Genre Counts
+                    </button>
+                    <button id="genre-rank-btn" class="clickable noselect">
+                        Genre Ranks
+                    </button>
+                    <button id="director-count-btn" class="clickable noselect">
+                        Director Counts
+                    </button>
+                    <button id="actor-count-btn" class="clickable noselect">
+                        Actor Counts
+                    </button>
+                </div>
+                <div id="report-box" style="display: none">
+                    <table id="report-box-records">
+                        <thead>
+                            <tr>
+                                <th id="reports-head1">Header 1</th>
+                                <th id="reports-head2">Header 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

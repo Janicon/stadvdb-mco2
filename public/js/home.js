@@ -46,6 +46,58 @@ $(document).ready(function() {
                               $.post('' + '/crashNode3');
                               $.post('' + '/crashNode3mv');
                         });
+
+    $('#genre-count-btn').on('click', function() {
+        $('#report-box').show();
+        $.get('/getGenreCounts', function(result) {
+            $('#report-box-records tbody').children().remove();
+            
+            var html = '';
+            for(var i = 0; i < result.length; i++)
+                        html += '<tr><td>' + result[i].label + 
+                                '</td><td>' + result[i].data + '</td></tr>';
+            $('#report-box-records tbody').append(html);
+        });
+    });
+
+    $('#genre-rank-btn').on('click', function() {
+        $('#report-box').show();
+        $.get('/getGenreRanks', function(result) {
+            $('#report-box-records tbody').children().remove();
+            
+            var html = '';
+            for(var i = 0; i < result.length; i++)
+                        html += '<tr><td>' + result[i].label + 
+                                '</td><td>' + result[i].data + '</td></tr>';
+            $('#report-box-records tbody').append(html);
+        });
+    });
+
+    $('#director-count-btn').on('click', function() {
+        $('#report-box').show();
+        $.get('/getDirectorCounts', function(result) {
+            $('#report-box-records tbody').children().remove();
+            
+            var html = '';
+            for(var i = 0; i < result.length; i++)
+                        html += '<tr><td>' + result[i].label + 
+                                '</td><td>' + result[i].data + '</td></tr>';
+            $('#report-box-records tbody').append(html);
+        });
+    });
+
+    $('#actor-count-btn').on('click', function() {
+        $('#report-box').show();
+        $.get('/getActorCounts', function(result) {
+            $('#report-box-records tbody').children().remove();
+            
+            var html = '';
+            for(var i = 0; i < result.length; i++)
+                        html += '<tr><td>' + result[i].label + 
+                                '</td><td>' + result[i].data + '</td></tr>';
+            $('#report-box-records tbody').append(html);
+        });
+    });
 });
 
 function setEnabled (element) {

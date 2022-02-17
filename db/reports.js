@@ -1,6 +1,7 @@
 
+const reports = {
 // number of movies per genre
-genreCountMovies: async(conn, tablename) => {
+    genreCountMovies: async(conn, tablename) => {
         var result;
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
@@ -23,10 +24,10 @@ genreCountMovies: async(conn, tablename) => {
                 return reject(err);
             });
         });
- },
+    },
 
-//Ranking of genres by rating
- genreAvgRank: async(conn, tablename) => {
+    //Ranking of genres by rating
+    genreAvgRank: async(conn, tablename) => {
          var result;
          return new Promise((resolve, reject) => {
              conn('START TRANSACTION')
@@ -49,7 +50,7 @@ genreCountMovies: async(conn, tablename) => {
                  return reject(err);
              });
          });
-  },
+    },
 
 //Number of movies per director in descending order, up to 100 rows
    directorCountMovies: async(conn, tablename) => {
@@ -102,3 +103,6 @@ genreCountMovies: async(conn, tablename) => {
              });
          });
   }
+};
+
+module.exports = reports;

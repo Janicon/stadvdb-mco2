@@ -1,8 +1,3 @@
-const e = require("express");
-const { query } = require("express");
-const res = require("express/lib/response");
-const async = require("hbs/lib/async");
-
 const db = {
     connect: function(conn, servername) {
         conn.connect(
