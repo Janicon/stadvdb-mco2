@@ -11,20 +11,7 @@ var n2 = connections.node2;
 var n3 = connections.node3;
 
 
-setInterval( function(){
-  if (n.state !== 'disconnected') {
 
-  }else
-  console.log("Node 1 Crash")
-
-},1000)
-setInterval( function(){
-  if (n2.state !== 'disconnected') {
-
-  }else
-  console.log("Node 2 Crash")
-
-},1000)
 const controller = {
     getFavicon: function (req, res) {
         res.status(204);
@@ -154,15 +141,11 @@ const controller = {
                 if (n1crashed2== true){
                 n = connections.crash;
                 }
-
-               n.query(log_commit, function (err, result, fields) {
-                                     if (err) throw err;
-                                     console.log(result);
-                                   });
-               n3.query(log_commit, function (err, result, fields) {
-                                      if (err) throw err;
-                                      console.log(result);
-                                    });
+                if(n.state !== 'disconnected')
+                               {
+               n.query(log_commit);
+               n3.query(log_commit);
+               }
 
                if (n1crashed2== true){
                     n1crashed2 = false;
@@ -290,15 +273,11 @@ const controller = {
                 if (n1crashed2== true){
                 n = connections.crash;
                 }
-
-               n.query(log_commit, function (err, result, fields) {
-                                     if (err) throw err;
-                                     console.log(result);
-                                   });
-               n2.query(log_commit, function (err, result, fields) {
-                                      if (err) throw err;
-                                      console.log(result);
-                                    });
+                if(n.state !== 'disconnected')
+                               {
+               n.query(log_commit);
+               n2.query(log_commit);
+               }
 
                if (n1crashed2== true){
                     n1crashed2 = false;
@@ -312,15 +291,11 @@ const controller = {
                 if (n1crashed2== true){
                 n = connections.crash;
                 }
-
-               n.query(log_commit, function (err, result, fields) {
-                                     if (err) throw err;
-                                     console.log(result);
-                                   });
-               n3.query(log_commit, function (err, result, fields) {
-                                      if (err) throw err;
-                                      console.log(result);
-                                    });
+                if(n.state !== 'disconnected')
+                               {
+               n.query(log_commit);
+               n3.query(log_commit);
+               }
 
                if (n1crashed2== true){
                     n1crashed2 = false;
@@ -381,15 +356,11 @@ const controller = {
                 if (n1crashed2== true){
                 n = connections.crash;
                 }
-
-               n.query(log_commit, function (err, result, fields) {
-                                     if (err) throw err;
-                                     console.log(result);
-                                   });
-               n2.query(log_commit, function (err, result, fields) {
-                                      if (err) throw err;
-                                      console.log(result);
-                                    });
+                if(n.state !== 'disconnected')
+               {
+               n.query(log_commit);
+               n2.query(log_commit);
+               }
 
                if (n1crashed2== true){
                     n1crashed2 = false;
@@ -400,19 +371,16 @@ const controller = {
                 n.query('INSERT INTO logs VALUES ('+logs+')');
                 n3.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> addMovie: Deleting from Node 1 and 3');
+
                 await db.deleteTwoNodes(connections.node1p, connections.node3p, 'den_imdb', conditions);
                 if (n1crashed2== true){
                 n = connections.crash;
                 }
-
-               n.query(log_commit, function (err, result, fields) {
-                                     if (err) throw err;
-                                     console.log(result);
-                                   });
-               n3.query(log_commit, function (err, result, fields) {
-                                      if (err) throw err;
-                                      console.log(result);
-                                    });
+                if(n.state !== 'disconnected')
+                {
+               n.query(log_commit);
+               n3.query(log_commit);
+               }
 
                if (n1crashed2== true){
                     n1crashed2 = false;
