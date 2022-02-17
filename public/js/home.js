@@ -34,6 +34,10 @@ $(document).ready(function() {
                           $.post('' + '/crashNode1mv');
 
                     });
+         $('#crash-node1bef-btn').on('click', function() {
+                                  $.post('' + '/crashNode1befMV');
+
+                            });
         $('#crash-node2-btn').on('click', function() {
                               $.post('' + '/crashNode2');
                               $.post('' + '/crashNode2mv');

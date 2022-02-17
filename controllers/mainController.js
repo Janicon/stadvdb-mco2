@@ -1,8 +1,9 @@
 const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
 const db = require('../db/db.js');
-var crashed = false;
-
+var n1crashed = false;
+var n2crashed = false;
+var n3crashed = false;
 const controller = {
     getFavicon: function (req, res) {
         res.status(204);
@@ -15,7 +16,7 @@ const controller = {
     getIndex: async(req, res) => {
         var result;
 
-        if (crashed){
+        if (n1crashed){
                 n = connections.crash
                 }
                 else
@@ -65,41 +66,41 @@ const controller = {
         res.render('error');
     },
     crashNode1: function(req, res){
-                        if (!crashed)
+                        if (!n1crashed)
                             {console.log('<mainController> Crashing Node 1');}
 
                         else
                            console.log('<mainController> Restoring Node 1');
-                    if(crashed == true)
-                              crashed = false;
+                    if(n1crashed == true)
+                              n1crashed = false;
                               else
-                              crashed = true;
+                              n1crashed = true;
 
                    },
           crashNode2: function(req, res){
-                         if (!crashed)
-                             console.log('<mainController> Crashing Node 1');
+                         if (!n2crashed)
+                             console.log('<mainController> Crashing Node 2');
 
                          else
-                            console.log('<mainController> Restoring Node 1');
+                            console.log('<mainController> Restoring Node 2');
 
-                      if(crashed == true)
-                                crashed = false;
+                      if(n2crashed == true)
+                                n2crashed = false;
                                 else
-                                crashed = true;
+                                n2crashed = true;
 
 
                  },
          crashNode3: function(req, res) {
-                         if (!crashed)
-                             console.log('<mainController> Crashing Node 1');
+                         if (!n3crashed)
+                             console.log('<mainController> Crashing Node 3');
 
                          else
-                            console.log('<mainController> Restoring Node 1');
-                      if(crashed == true)
-                                crashed = false;
+                            console.log('<mainController> Restoring Node 3');
+                      if(n3crashed == true)
+                                n3crashed = false;
                                 else
-                                crashed = true;
+                                n3crashed = true;
                   }
 }
 

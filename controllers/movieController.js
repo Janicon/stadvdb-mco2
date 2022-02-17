@@ -2,13 +2,27 @@ const e = require('express');
 const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
 const db = require('../db/db.js');
-var crashed = false;
+var n1crashed = false;
+var n1crashed2 = false;
+var n2crashed = false;
+var n3crashed = false;
 var n = connections.node1;
+var n2 = connections.node2;
+var n3 = connections.node3;
+
 
 setInterval( function(){
   if (n.state !== 'disconnected') {
 
-  }
+  }else
+  console.log("Node 1 Crash")
+
+},1000)
+setInterval( function(){
+  if (n2.state !== 'disconnected') {
+
+  }else
+  console.log("Node 2 Crash")
 
 },1000)
 const controller = {
@@ -20,7 +34,7 @@ const controller = {
 
         var id = req.params.id;
         var result;
-                 if (crashed)
+                 if (n1crashed)
                     n = connections.crash
                 else
                     n = connections.node1;
@@ -79,6 +93,7 @@ const controller = {
     */
 
     addMovie: async(req, res) => {
+    var addCrash = false;
         const d = new Date();
         console.log(d);
         let time = d.getTime();
@@ -112,20 +127,47 @@ const controller = {
         console.log('<movieController> addMovie: ' + values);
         try {
             if (req.body.addYear < 1980) {
-                connections.node1.query('INSERT INTO logs VALUES ('+logs+')');
-                connections.node2.query('INSERT INTO logs VALUES ('+logs+')');
+                n.query('INSERT INTO logs VALUES ('+logs+')');
+                n2.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> addMovie: Inserting to Node 1 and 2');
                 await db.insertTwoNodes(connections.node1p, connections.node2p, 'den_imdb', values);
-                connections.node1.query(log_commit);
-                connections.node2.query(log_commit);
+                if (n1crashed2== true){
+                n = connections.crash;
+                }
+                if(n.state !== 'disconnected')
+               {
+               n.query(log_commit);
+               n2.query(log_commit);
+                 }
+
+               if (n1crashed2== true){
+                    n1crashed2 = false;
+                    n = connections.node1;
+               }
+
             }
             else {
-            connections.node1.query('INSERT INTO logs VALUES ('+logs+')');
-            connections.node3.query('INSERT INTO logs VALUES ('+logs+')');
+            n.query('INSERT INTO logs VALUES ('+logs+')');
+            n3.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> addMovie: Inserting to Node 1 and 3');
                 await db.insertTwoNodes(connections.node1p, connections.node3p, 'den_imdb', values);
-                connections.node1.query(log_commit);
-                connections.node3.query(log_commit);
+                if (n1crashed2== true){
+                n = connections.crash;
+                }
+
+               n.query(log_commit, function (err, result, fields) {
+                                     if (err) throw err;
+                                     console.log(result);
+                                   });
+               n3.query(log_commit, function (err, result, fields) {
+                                      if (err) throw err;
+                                      console.log(result);
+                                    });
+
+               if (n1crashed2== true){
+                    n1crashed2 = false;
+                    n = connections.node1;
+               }
             }
             res.redirect('/movie/' + req.body.addId);
         } catch (err) {
@@ -241,20 +283,49 @@ const controller = {
         
         try {
             if (req.body.addYear < 1980) {
-                connections.node1.query('INSERT INTO logs VALUES ('+logs+')');
-                 connections.node2.query('INSERT INTO logs VALUES ('+logs+')');
+                n.query('INSERT INTO logs VALUES ('+logs+')');
+                 n2.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> editMovie: Writing to Node 1 and 2');
                 await db.updateTwoNodes(connections.node1p, connections.node2p, 'den_imdb', columns, values, conditions);
-                connections.node1.query(log_commit);
-                connections.node2.query(log_commit);
+                if (n1crashed2== true){
+                n = connections.crash;
+                }
+
+               n.query(log_commit, function (err, result, fields) {
+                                     if (err) throw err;
+                                     console.log(result);
+                                   });
+               n2.query(log_commit, function (err, result, fields) {
+                                      if (err) throw err;
+                                      console.log(result);
+                                    });
+
+               if (n1crashed2== true){
+                    n1crashed2 = false;
+                    n = connections.node1;
+               }
             }
             else {
-                connections.node1.query('INSERT INTO logs VALUES ('+logs+')');
-                connections.node3.query('INSERT INTO logs VALUES ('+logs+')');
+                n.query('INSERT INTO logs VALUES ('+logs+')');
+                n3.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> editMovie: Writing to Node 1 and 3');
-                await db.updateTwoNodes(connections.node1p, connections.node3p, 'den_imdb', columns, values, conditions);
-                connections.node1.query(log_commit);
-                connections.node3.query(log_commit);
+                if (n1crashed2== true){
+                n = connections.crash;
+                }
+
+               n.query(log_commit, function (err, result, fields) {
+                                     if (err) throw err;
+                                     console.log(result);
+                                   });
+               n3.query(log_commit, function (err, result, fields) {
+                                      if (err) throw err;
+                                      console.log(result);
+                                    });
+
+               if (n1crashed2== true){
+                    n1crashed2 = false;
+                    n = connections.node1;
+               }
             }
 
             res.redirect('/movie/' + req.params.id);
@@ -303,20 +374,50 @@ const controller = {
         
         try {            
             if (year < 1980) {
-                connections.node1.query('INSERT INTO logs VALUES ('+logs+')');
-                connections.node2.query('INSERT INTO logs VALUES ('+logs+')');
+                n.query('INSERT INTO logs VALUES ('+logs+')');
+                n2.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> addMovie: Deleting from Node 1 and 2');
                 await db.deleteTwoNodes(connections.node1p, connections.node2p, 'den_imdb', conditions);
-                connections.node1.query(log_commit);
-                connections.node2.query(log_commit);
+                if (n1crashed2== true){
+                n = connections.crash;
+                }
+
+               n.query(log_commit, function (err, result, fields) {
+                                     if (err) throw err;
+                                     console.log(result);
+                                   });
+               n2.query(log_commit, function (err, result, fields) {
+                                      if (err) throw err;
+                                      console.log(result);
+                                    });
+
+               if (n1crashed2== true){
+                    n1crashed2 = false;
+                    n = connections.node1;
+               }
             }
             else {
-                connections.node1.query('INSERT INTO logs VALUES ('+logs+')');
-                connections.node2.query('INSERT INTO logs VALUES ('+logs+')');
+                n.query('INSERT INTO logs VALUES ('+logs+')');
+                n3.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> addMovie: Deleting from Node 1 and 3');
                 await db.deleteTwoNodes(connections.node1p, connections.node3p, 'den_imdb', conditions);
-                connections.node1.query(log_commit);
-                connections.node3.query(log_commit);
+                if (n1crashed2== true){
+                n = connections.crash;
+                }
+
+               n.query(log_commit, function (err, result, fields) {
+                                     if (err) throw err;
+                                     console.log(result);
+                                   });
+               n3.query(log_commit, function (err, result, fields) {
+                                      if (err) throw err;
+                                      console.log(result);
+                                    });
+
+               if (n1crashed2== true){
+                    n1crashed2 = false;
+                    n = connections.node1;
+               }
             }
 
             res.redirect('/');
@@ -326,43 +427,56 @@ const controller = {
         }
     },
           crashNode1: function(req, res){
-                         if (!crashed)
+                         if (!n1crashed)
                              console.log('<movieController> Crashing Node 1');
 
                          else
                             console.log('<movieController> Restoring Node 1');
 
-                         if(crashed == true)
-                                   crashed = false;
+                         if(n1crashed == true)
+                                   n1crashed = false;
                                    else
-                                   crashed = true;
+                                   n1crashed = true;
+
+                        },
+                 crashNode1befMV: function(req, res){
+                         if (!n1crashed)
+                             console.log('<movieController> Crashing Node 1');
+
+                         else
+                            console.log('<movieController> Restoring Node 1');
+
+                         if(n1crashed2 == true)
+                                   n1crashed2 = false;
+                                   else
+                                   n1crashed2 = true;
 
                         },
                crashNode2: function(req, res){
-                         if (!crashed)
+                         if (!n2crashed)
                              console.log('<movieController> Crashing Node 2');
 
                          else
                             console.log('<movieController> Restoring Node 2');
 
 
-                           if(crashed == true)
-                                     crashed = false;
+                           if(n2crashed == true)
+                                     n2crashed = false;
                                      else
-                                     crashed = true;
+                                     n2crashed = true;
 
 
                       },
               crashNode3: function(req, res) {
-                         if (!crashed)
+                         if (!n3crashed)
                              console.log('<movieController> Crashing Node 3');
 
                          else
                             console.log('<movieController> Restoring Node 3');
-                           if(crashed == true)
-                                     crashed = false;
+                           if(n3crashed == true)
+                                     n3crashed = false;
                                      else
-                                     crashed = true;
+                                     n3crashed = true;
                        }
 
 }
