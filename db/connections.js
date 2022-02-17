@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const path = require("path");
 const fs = require('fs');
 const util = require('util');
 
@@ -10,7 +11,7 @@ var config0 =
     password: 'Tester123',
     database: 'test',
     port: 3306,
-    ssl: {ca: fs.readFileSync("../DigiCertGlobalRootCA.crt.pem")}
+    ssl: {ca: fs.readFileSync(path.resolve(__dirname, "../DigiCertGlobalRootCA.crt.pem"))}
 };
 
 var config1 =
@@ -20,7 +21,7 @@ var config1 =
     password: 'MCO2node1',
     database: 'mco2node1',
     port: 3306,
-    ssl: {ca: fs.readFileSync("../DigiCertGlobalRootCA.crt.pem")}
+    ssl: {ca: fs.readFileSync(path.resolve(__dirname, "../DigiCertGlobalRootCA.crt.pem"))}
 };
 
 var config2 =
@@ -30,7 +31,7 @@ var config2 =
     password: 'MCO2Node2',
     database: 'mco2node2',
     port: 3306,
-    ssl: {ca: fs.readFileSync("../DigiCertGlobalRootCA.crt.pem")}
+    ssl: {ca: fs.readFileSync(path.resolve(__dirname, "../DigiCertGlobalRootCA.crt.pem"))}
 };
 
 var config3 =
@@ -40,7 +41,7 @@ var config3 =
     password: 'MCO2Node3',
     database: 'mco2node3',
     port: 3306,
-    ssl: {ca: fs.readFileSync("../DigiCertGlobalRootCA.crt.pem")}
+    ssl: {ca: fs.readFileSync(path.resolve(__dirname, "../DigiCertGlobalRootCA.crt.pem"))}
 };
 var configc =
 {
@@ -49,7 +50,7 @@ var configc =
       password:"UsMcQ-wQwZg.z9C",
        database:"test",
         port:3306,
-         ssl:{ca:fs.readFileSync("../DigiCertGlobalRootCA.crt.pem")}
+        ssl: {ca: fs.readFileSync(path.resolve(__dirname, "../DigiCertGlobalRootCA.crt.pem"))}
      };
 
 var conn0 = new mysql.createConnection(config0);
