@@ -45,7 +45,7 @@ const controller = {
     
                 movielist.push(movie);
                 
-                if (i == 30)
+                if (i == 150)
                     break;
             }
             

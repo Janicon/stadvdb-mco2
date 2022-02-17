@@ -21,7 +21,6 @@ app.use(express.static(__dirname + '/public'));
 
 app.use('/', routes);
 
-db.connect(connections.test, 'Test server');
 db.connect(connections.node1, 'Node 1');
 db.connect(connections.node2, 'Node 2');
 db.connect(connections.node3, 'Node 3');

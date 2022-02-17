@@ -142,22 +142,22 @@ const db = {
                     })
                     .catch((err) => {
                         console.error('<db.insert> Error - transaction 2 wrote 0 records');
+                        console.log('<db.insert> Rolling back transaction 2');
                         return conn('ROLLBACK');
                     })
                     // Rollback changes to Node 2
                     .then((res) => {
-                        console.log('<db.insert> Rolling back transaction 2');
                         return reject(new Error());
                     });
                 }
             })
             .catch((err) => {
                 console.error('<db.insert> Error - transaction 1 wrote 0 records');
+                console.log('<db.insert> Rolling back transaction 1');
                 return conn('ROLLBACK');
             })
             // Rollback changes to Node 1
             .then((res) => {
-                console.log('<db.insert> Rolling back transaction 1');
                 return reject(new Error());
             });
         });
@@ -246,22 +246,22 @@ const db = {
                     })
                     .catch((err) => {
                         console.error('<db.update> Error - transaction 2 modified 0 records');
+                        console.log('<db.update> Rolling back transaction 2');
                         return conn('ROLLBACK');
                     })
                     // Rollback changes to Node 2
                     .then((res) => {
-                        console.log('<db.update> Rolling back transaction 2');
                         return reject(new Error());
                     });
                 }
             })
             .catch((err) => {
                 console.error('<db.update> Error - transaction 1 modified 0 records');
+                console.log('<db.update> Rolling back transaction 1');
                 return conn('ROLLBACK');
             })
             // Rollback changes to Node 1
             .then((res) => {
-                console.log('<db.update> Rolling back transaction 1');
                 return reject(new Error());
             });
         });
@@ -329,7 +329,7 @@ const db = {
                         // If Node 2 was not updated, do a rollback
                         if(result2.affectedRows == 0)
                             throw new Error();
-                        // If Node 2 was updated, commit changes for Node 1 and 2
+                        // If Node 2 was updated, commit
                         else {
                             // Commit updates to Node 2
                             return conn2('COMMIT')
@@ -342,22 +342,22 @@ const db = {
                     })
                     .catch((err) => {
                         console.error('<db.delete> Error - transaction 2 modified 0 records');
+                        console.log('<db.delete> Rolling back transaction 2');
                         return conn('ROLLBACK');
                     })
                     // Rollback changes to Node 2
                     .then((res) => {
-                        console.log('<db.delete> Rolling back transaction 2');
                         return reject(new Error());
                     });
                 }
             })
             .catch((err) => {
                 console.error('<db.delete> Error - transaction 1 modified 0 records');
+                console.log('<db.insert> Rolling back transaction 1');
                 return conn('ROLLBACK');
             })
             // Rollback changes to Node 1
             .then((res) => {
-                console.log('<db.insert> Rolling back transaction 1');
                 return reject(new Error());
             });
         });

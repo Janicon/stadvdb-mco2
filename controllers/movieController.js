@@ -33,7 +33,7 @@ const controller = {
                 result = await db.find(connections.node1p, 'den_imdb', 'id=' + id);
             }
             else {
-                console.log('<movieController> getIndex: Node 1 is down; querying node 2 and 3');
+                console.log('<movieController> getMovie: Node 1 is down; querying node 2 and 3');
                 result = await db.find(connections.node2p, 'den_imdb', 'id=' + id);
                 result = result.concat(await db.find(connections.node3p, 'den_imdb', 'id=' + id));
             }
@@ -265,9 +265,9 @@ const controller = {
         }
         
         try {
-            if (req.body.addYear < 1980) {
+            if (req.body.editYear < 1980) {
                 n.query('INSERT INTO logs VALUES ('+logs+')');
-                 n2.query('INSERT INTO logs VALUES ('+logs+')');
+                n2.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> editMovie: Writing to Node 1 and 2');
                 await db.updateTwoNodes(connections.node1p, connections.node2p, 'den_imdb', columns, values, conditions);
                 if (n1crashed2== true){
@@ -288,19 +288,7 @@ const controller = {
                 n.query('INSERT INTO logs VALUES ('+logs+')');
                 n3.query('INSERT INTO logs VALUES ('+logs+')');
                 console.log('<movieController> editMovie: Writing to Node 1 and 3');
-                if (n1crashed2== true){
-                n = connections.crash;
-                }
-                if(n.state !== 'disconnected')
-                               {
-               n.query(log_commit);
-               n3.query(log_commit);
-               }
-
-               if (n1crashed2== true){
-                    n1crashed2 = false;
-                    n = connections.node1;
-               }
+                await db.updateTwoNodes(connections.node1p, connections.node3p, 'den_imdb', columns, values, conditions);
             }
 
             res.redirect('/movie/' + req.params.id);
@@ -330,22 +318,6 @@ const controller = {
             console.log(time);
         var year = req.query.year;
         var conditions = 'id=' + req.params.id;
-
-         var temp = '"DELETE", '
-                +req.params.id + ', '
-                + 'NULL, '
-                + '-1, '
-                +'-1, '
-                + 'NULL, '
-                + 'NULL, '
-                + 'NULL, '
-                + 'NULL, ' + 'FALSE'
-
-                var logs = d;
-
-                logs = '"' +  logs + '", ' + temp;
-                console.log(d);
-         var log_commit = 'UPDATE logs SET committed = TRUE WHERE log_id = "' + d + '"';
         
         try {            
             if (year < 1980) {
