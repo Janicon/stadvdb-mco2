@@ -9,6 +9,12 @@ app.get('/favicon.ico', mainController.getFavicon);
 app.get('/', mainController.getIndex);
 app.get('/movie/:id', movieController.getMovie);
 app.post('/addMovie', movieController.addMovie);
+app.post('/crashNode1', mainController.crashNode1);
+app.post('/crashNode2', mainController.crashNode2);
+app.post('/crashNode3', mainController.crashNode3);
+app.post('/crashNode1mv', movieController.crashNode1);
+app.post('/crashNode2mv', movieController.crashNode2);
+app.post('/crashNode3mv', movieController.crashNode3);
 app.post('/movie/:id/edit', movieController.editMovie);
 app.get('/movie/:id/delete', movieController.deleteMovie);
 

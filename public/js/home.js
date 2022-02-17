@@ -29,6 +29,19 @@ $(document).ready(function() {
         else
             setDisabled($("#add-movie-btn"));
     });
+        $('#crash-node1-btn').on('click', function() {
+                          $.post('' + '/crashNode1');
+                          $.post('' + '/crashNode1mv');
+
+                    });
+        $('#crash-node2-btn').on('click', function() {
+                              $.post('' + '/crashNode2');
+                              $.post('' + '/crashNode2mv');
+                        });
+        $('#crash-node3-btn').on('click', function() {
+                              $.post('' + '/crashNode3');
+                              $.post('' + '/crashNode3mv');
+                        });
 });
 
 function setEnabled (element) {

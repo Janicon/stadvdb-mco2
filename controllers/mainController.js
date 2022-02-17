@@ -1,6 +1,7 @@
 const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
 const db = require('../db/db.js');
+var crashed = false;
 
 const controller = {
     getFavicon: function (req, res) {
@@ -13,10 +14,18 @@ const controller = {
 
     getIndex: async(req, res) => {
         var result;
+
+        if (crashed){
+                n = connections.crash
+                }
+                else
+                n = connections.node1;
+
+
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(connections.node1.state !== 'disconnected') {
+            if(n.state !== 'disconnected') {
                 console.log('<mainController> getIndex: Querying from Node 1');
                 result = await db.findAll(connections.node1p, 'den_imdb');
             }
@@ -54,7 +63,44 @@ const controller = {
     getError: function(req, res) {
         res.status('404');
         res.render('error');
-    }
+    },
+    crashNode1: function(req, res){
+                        if (!crashed)
+                            {console.log('<mainController> Crashing Node 1');}
+
+                        else
+                           console.log('<mainController> Restoring Node 1');
+                    if(crashed == true)
+                              crashed = false;
+                              else
+                              crashed = true;
+
+                   },
+          crashNode2: function(req, res){
+                         if (!crashed)
+                             console.log('<mainController> Crashing Node 1');
+
+                         else
+                            console.log('<mainController> Restoring Node 1');
+
+                      if(crashed == true)
+                                crashed = false;
+                                else
+                                crashed = true;
+
+
+                 },
+         crashNode3: function(req, res) {
+                         if (!crashed)
+                             console.log('<mainController> Crashing Node 1');
+
+                         else
+                            console.log('<mainController> Restoring Node 1');
+                      if(crashed == true)
+                                crashed = false;
+                                else
+                                crashed = true;
+                  }
 }
 
 module.exports = controller;
