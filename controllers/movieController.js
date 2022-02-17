@@ -15,11 +15,11 @@ const controller = {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
             if(connections.node1.state !== 'disconnected') {
-                console.log('<movieController> getIndex: Querying from Node 1');
+                console.log('<movieController> getMovie: Querying from Node 1');
                 result = await db.find(connections.node1p, 'den_imdb', 'id=' + id);
             }
             else {
-                console.log('<movieController> getIndex: Node 1 is down; querying node 2 and 3');
+                console.log('<movieController> getMovie: Node 1 is down; querying node 2 and 3');
                 result = await db.find(connections.node2p, 'den_imdb', 'id=' + id);
                 result = result.concat(await db.find(connections.node3p, 'den_imdb', 'id=' + id));
             }
@@ -152,7 +152,7 @@ const controller = {
             values.push(req.body.editYear);
         }
         if(req.body.editRank != '') {
-            columns.push('rank');
+            columns.push('`rank`');
             values.push(req.body.editRank);
         }
         if(req.body.editGenre != '') {
@@ -173,7 +173,7 @@ const controller = {
         }
         
         try {
-            if (req.body.addYear < 1980) {
+            if (req.body.editYear < 1980) {
                 console.log('<movieController> editMovie: Writing to Node 1 and 2');
                 await db.updateTwoNodes(connections.node1p, connections.node2p, 'den_imdb', columns, values, conditions);
             }
