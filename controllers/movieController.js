@@ -135,7 +135,9 @@ const controller = {
                 await dbNC.insert(connections.node1p, 'logs', log);
 
                 console.log('<movieController> addMovie: Inserting Node 1 record');
-                await db.insert(n1p, 'den_imdb', values);
+                var result1 = await db.insert(n1p, 'den_imdb', values);
+                if(result1 == null)
+                    throw new Error('Could not insert to node 1');
 
                 console.log('<movieController> addMovie: Updating Node 1 log');
                 await dbNC.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -145,7 +147,9 @@ const controller = {
                 await dbNC.insert(connections.node2p, 'logs', log);
 
                 console.log('<movieController> addMovie: Inserting Node 2 record');
-                await db.insert(n2p, 'den_imdb', values);
+                var result2 = await db.insert(n2p, 'den_imdb', values);
+                if(result2 == null)
+                    throw new Error('Could not insert to node 2');
 
                 console.log('<movieController> addMovie: Updating Node 2 log');
                 await dbNC.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -156,7 +160,9 @@ const controller = {
                 await dbNC.insert(connections.node1p, 'logs', log);
 
                 console.log('<movieController> addMovie: Inserting Node 1 record');
-                await db.insert(n1p, 'den_imdb', values);
+                var result1 = await db.insert(n1p, 'den_imdb', values);
+                if(result1 == null)
+                    throw new Error('Could not insert to node 1');
 
                 console.log('<movieController> addMovie: Updating Node 1 log');
                 await dbNC.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -166,14 +172,16 @@ const controller = {
                 await dbNC.insert(connections.node3p, 'logs', log);
 
                 console.log('<movieController> addMovie: Inserting Node 3 record');
-                await db.insert(n3p, 'den_imdb', values);
+                var result2 = await db.insert(n3p, 'den_imdb', values);
+                if(result2 == null)
+                    throw new Error('Could not insert to node 3');
 
                 console.log('<movieController> addMovie: Updating Node 3 log');
                 await dbNC.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
             }
             res.redirect('/movie/' + req.body.addId);
         } catch (err) {
-        console.log(err);
+            console.log(err);
             console.log('<movieController> addMovie: Error - Could not write to both nodes');
             res.redirect('/');
         }
@@ -253,7 +261,9 @@ const controller = {
                 // update data in node 1
                 console.log('<movieController> editMovie: Update Node 1 record ' + conditions + ' year ' + year);
                 // update: async(conn, tablename, columns, values, conditions)
-                await db.update(n1p, 'den_imdb', columns, values, conditions);
+                var result1 = await db.update(n1p, 'den_imdb', columns, values, conditions);
+                if(result1 == null)
+                    throw new Error('Could not insert to node 1');
 
                 console.log('<movieController> editMovie: Updating Node 1 log ');
                 await dbNC.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -263,7 +273,9 @@ const controller = {
                 await dbNC.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
 
                 console.log('<movieController> editMovie: Updating Node 2 record ' + conditions + ' year ' + year);
-                 await db.update(n2p, 'den_imdb', columns, values, conditions + ' year ' + year);
+                var result2 = await db.update(n2p, 'den_imdb', columns, values, conditions + ' year ' + year);
+                if(result2 == null)
+                    throw new Error('Could not insert to node 2');
 
                 console.log('<movieController> editMovie: Updating Node 2 log');
                 await dbNC.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -276,7 +288,9 @@ const controller = {
                 // update data in node 1
                 console.log('<movieController> editMovie: Updating Node 1 record ' + conditions + ' year ' + year);
                 // update: async(conn, tablename, columns, values, conditions)
-                await db.update(n1p, 'den_imdb', columns, values, conditions);
+                var result1 = await db.update(n1p, 'den_imdb', columns, values, conditions);
+                if(result1 == null)
+                    throw new Error('Could not insert to node 1');
 
                 console.log('<movieController> editMovie: Updating Node 1 log');
                 await dbNC.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -286,7 +300,9 @@ const controller = {
                 await dbNC.insertSpecific(connections.node3p, 'logs', logColumns, logValues);
 
                 console.log('<movieController> editMovie: Updating Node 3 record ' + conditions + ' year ' + year);
-                await db.update(n3p, 'den_imdb', columns, values, conditions);
+                var result2 = await db.update(n3p, 'den_imdb', columns, values, conditions);
+                if(result2 == null)
+                    throw new Error('Could not insert to node 3');
 
                 console.log('<movieController> editMovie: Updating Node 3 log');
                 await dbNC.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -345,7 +361,9 @@ const controller = {
                // update data in node 1
                console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions + ' year ' + year);
                //  delete: async(conn, tablename, conditions) => {
-               await db.delete(n1p, 'den_imdb', conditions);
+               var result1 = await db.delete(n1p, 'den_imdb', conditions);
+               if(result1 == null)
+                   throw new Error('Could not insert to node 1');
 
                console.log('<movieController> deleteMovie: Updating Node 1 log');
                await dbNC.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -355,7 +373,9 @@ const controller = {
                await dbNC.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
 
                console.log('<movieController> deleteMovie: Delete Node 2 record ' + conditions + ' year ' + year);
-               await db.delete(n2p, 'den_imdb', conditions);
+               var result2 = await db.delete(n2p, 'den_imdb', conditions);
+               if(result2 == null)
+                   throw new Error('Could not insert to node 2');
 
                console.log('<movieController> deleteMovie: Updating Node 2 log');
                await dbNC.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -368,7 +388,9 @@ const controller = {
                // update data in node 1
                console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions + ' year ' + year);
                //  delete: async(conn, tablename, conditions) => {
-               await db.delete(n1p, 'den_imdb', conditions);
+               var result1 = await db.delete(n1p, 'den_imdb', conditions);
+               if(result1 == null)
+                   throw new Error('Could not insert to node 1');
 
                console.log('<movieController> deleteMovie: Updating Node 1 log');
                await dbNC.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -378,7 +400,9 @@ const controller = {
                await dbNC.insertSpecific(connections.node3p, 'logs', logColumns, logValues);
 
                console.log('<movieController> deleteMovie: Delete Node 3 record ' + conditions + ' year ' + year);
-               await db.delete(n3p, 'den_imdb', conditions);
+               var result2 = await db.delete(n3p, 'den_imdb', conditions);
+               if(result2 == null)
+                   throw new Error('Could not insert to node 3');
 
                console.log('<movieController> deleteMovie: Updating Node 3 log');
                await dbNC.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));

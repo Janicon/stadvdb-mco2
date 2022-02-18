@@ -47,8 +47,6 @@ const db = {
             })
             .then((res) => {
                 result = res;
-                if(nCrash)
-                    throw new Error();
                 console.log('<db.find> Found ' + result.length + ' row(s)');
                 return conn('COMMIT');
             })
@@ -74,8 +72,6 @@ const db = {
             })
             .then((res) => {
                 result = res;
-                if(nCrash)
-                    throw new Error();
                 console.log('<db.findAll> Found ' + result.length + ' row(s)');
                 return conn('COMMIT')
             })
@@ -101,18 +97,21 @@ const db = {
             })
             .then((res) => {
                 result = res;
-                if(nCrash)
-                    throw new Error();
                 console.log('<db.insert> Inserted ' + result.affectedRows + ' row(s)');
+                if(nCrash) {
+                    console.log('<db.insert> Rolling back transaction');
+                    result = null;
+                    return conn('ROLLBACK');
+                }
+                console.log('<db.insert> Committing transaction');
                 return conn('COMMIT');
             })
             .then((res) => {
-                console.log('<db.insert> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('<db.insert> Error - ', err);
-                return reject(err);
+                console.log('<db.insert> Rolling back transaction');
+                return conn('ROLLBACK');
             });
         });
     },
@@ -236,18 +235,21 @@ const db = {
             })
             .then((res) => {
                 result = res;
-                if(nCrash)
-                    throw new Error();
                 console.log('<db.update> Updated ' + result.affectedRows + ' row(s)');
+                if(nCrash) {
+                    console.log('<db.insert> Rolling back transaction');
+                    result = null;
+                    return conn('ROLLBACK');
+                }
+                console.log('<db.update> Committing transaction');
                 return conn('COMMIT');
             })
             .then((res) => {
-                console.log('<db.update> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('<db.update> Error - ', err);
-                return reject(err);
+                console.log('<db.insert> Rolling back transaction');
+                return conn('ROLLBACK');
             });
         });
     },
@@ -340,18 +342,21 @@ const db = {
             })
             .then((res) => {
                 result = res;
-                if(nCrash)
-                    throw new Error();
                 console.log('<db.delete> Deleted ' + result.affectedRows + ' row(s)');
+                if(nCrash) {
+                    console.log('<db.insert> Rolling back transaction');
+                    result = null;
+                    return conn('ROLLBACK');
+                }
+                console.log('<db.delete> Committing transaction');
                 return conn('COMMIT');
             })
             .then((res) => {
-                console.log('<db.delete> Committing transaction');
                 return resolve(result);
             })
             .catch((err) => {
-                console.error('<db.delete> Error - ', err);
-                return reject(err);
+                console.log('<db.insert> Rolling back transaction');
+                return conn('ROLLBACK');
             });
         });
     },
