@@ -35,7 +35,7 @@ $(document).ready(function() {
 
                     });
          $('#crash-node1bef-btn').on('click', function() {
-                                  $.post('' + '/crashNode1befMV');
+                                  $.post('' + '/crashNode1bef');
 
                             });
         $('#crash-node2-btn').on('click', function() {

@@ -1,4 +1,7 @@
+var nCrash = false;
+
 const db = {
+
     connect: function(conn, servername) {
         conn.connect(
             function (err) { 
@@ -10,6 +13,7 @@ const db = {
     },
 
     find: async(conn, tablename, conditions) => {
+
         var result;
 
         return new Promise((resolve, reject) => {
@@ -20,6 +24,8 @@ const db = {
             })
             .then((res) => {
                 result = res;
+                if(nCrash)
+                    throw new Error();
                 console.log('<db.find> Found ' + result.length + ' row(s)');
                 return conn('COMMIT')
             })
@@ -45,6 +51,8 @@ const db = {
             })
             .then((res) => {
                 result = res;
+                if(nCrash)
+                    throw new Error();
                 console.log('<db.findAll> Found ' + result.length + ' row(s)');
                 return conn('COMMIT')
             })
@@ -70,6 +78,8 @@ const db = {
             })
             .then((res) => {
                 result = res;
+                if(nCrash)
+                    throw new Error();
                 console.log('<db.insert> Inserted ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
@@ -100,6 +110,8 @@ const db = {
             })
             .then((res) => {
                 result = res;
+                if(nCrash)
+                    throw new Error();
                 console.log('<db.insert> Inserted ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
@@ -135,6 +147,8 @@ const db = {
                     throw new Error();
                 // If Node 1 was updated, commit
                 else {
+                if(nCrash)
+                    throw new Error();
                     return conn('COMMIT')
                     // Commit updates to Node 1
                     .then((res) => {
@@ -201,6 +215,8 @@ const db = {
             })
             .then((res) => {
                 result = res;
+                if(nCrash)
+                    throw new Error();
                 console.log('<db.update> Updated ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
@@ -240,6 +256,8 @@ const db = {
                 // If Node 1 was updated, commit
                 else {
                     // Commit updates to Node 1
+                if(nCrash)
+                    throw new Error();
                     return conn('COMMIT')
                     .then((res) => {
                         console.log('<db.update> Committing transaction 1');
@@ -301,6 +319,8 @@ const db = {
             })
             .then((res) => {
                 result = res;
+                if(nCrash)
+                    throw new Error();
                 console.log('<db.delete> Deleted ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
@@ -336,6 +356,8 @@ const db = {
                 // If Node 1 was updated, commit
                 else {
                     // Commit updates to Node 1
+                if(nCrash)
+                    throw new Error();
                     return conn('COMMIT')
                     .then((res) => {
                         console.log('<db.delete> Committing transaction 1');
@@ -357,6 +379,8 @@ const db = {
                         // If Node 2 was updated, commit
                         else {
                             // Commit updates to Node 2
+                if(nCrash)
+                    throw new Error();
                             return conn2('COMMIT')
                             .then((res) => {
                                 console.log('<db.delete> Committing transaction 2');
@@ -386,7 +410,18 @@ const db = {
                 return reject(new Error());
             });
         });
-    }
+    },
+    crashNodeBef: function(req, res) {
+                             if (!nCrash)
+                                 console.log('<db> Crashing Before Next Commits');
+
+                             else
+                                console.log('<db> Will Not Crash Before Next Commits');
+                          if(nCrash)
+                                    nCrash = false;
+                                    else
+                                    nCrash = true;
+                      }
     
     /*
     findCount: function(conn, tablename, callback) {

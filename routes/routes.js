@@ -2,6 +2,7 @@ const express = require('express');
 const mainController = require('../controllers/mainController.js');
 const movieController = require('../controllers/movieController.js');
 const testController = require('../controllers/testController.js');
+const db = require('../db/db.js');
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.post('/crashNode1', mainController.crashNode1);
 app.post('/crashNode2', mainController.crashNode2);
 app.post('/crashNode3', mainController.crashNode3);
 app.post('/crashNode1mv', movieController.crashNode1);
-app.post('/crashNode1befMV', movieController.crashNode1befMV);
+app.post('/crashNode1bef', db.crashNodeBef);
 app.post('/crashNode2mv', movieController.crashNode2);
 app.post('/crashNode3mv', movieController.crashNode3);
 app.post('/movie/:id/edit', movieController.editMovie);

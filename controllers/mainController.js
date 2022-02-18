@@ -2,9 +2,16 @@ const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
 const db = require('../db/db.js');
 const reportdb = require('../db/reports.js');
+
 var n1crashed = false;
 var n2crashed = false;
 var n3crashed = false;
+var n = connections.node1;
+var n2 = connections.node2;
+var n3 = connections.node3;
+var n1p = connections.node1p;
+var n2p = connections.node2p;
+var n3p = connections.node3p;
 
 const controller = {
     getFavicon: function (req, res) {
@@ -18,11 +25,30 @@ const controller = {
     getIndex: async(req, res) => {
         var result;
 
-        if (n1crashed){
-                n = connections.crash
+                if (n1crashed){
+                    n = connections.crash;
+                    n1p = connections.nodecp;
+                    }
+                else{
+                     n = connections.node1;
+                    n1p = connections.node1p;
                 }
-                else
-                n = connections.node1;
+                if (n2crashed){
+                    n = connections.crash;
+                    n2p = connections.nodecp;
+                }
+                else{
+                     n = connections.node2;
+                    n2p = connections.node2p;
+                }
+                if (n3crashed){
+                    n = connections.crash;
+                    n3p = connections.nodecp;
+                }
+                else{
+                     n = connections.node3;
+                    n3p = connections.node3p;
+                }
 
 
         try {
@@ -30,12 +56,12 @@ const controller = {
             // else take results from node 2 and 3 
             if(n.state !== 'disconnected') {
                 console.log('<mainController> getIndex: Querying from Node 1');
-                result = await db.findAll(connections.node1p, 'den_imdb');
+                result = await db.findAll(n1p, 'den_imdb');
             }
             else {
                 console.log('<mainController> getIndex: Node 1 is down; querying node 2 and 3');
-                result = await db.findAll(connections.node2p, 'den_imdb');
-                result = result.concat(await db.findAll(connections.node3p, 'den_imdb'));
+                result = await db.findAll(n2p, 'den_imdb');
+                result = result.concat(await db.findAll(n3p, 'den_imdb'));
             }
             
             var movielist = [];
@@ -60,17 +86,41 @@ const controller = {
 
     getGenreCounts: async(req, res) => {
         var result;
+                if (n1crashed){
+                    n = connections.crash;
+                    n1p = connections.nodecp;
+                    }
+                else{
+                     n = connections.node1;
+                    n1p = connections.node1p;
+                }
+                if (n2crashed){
+                    n = connections.crash;
+                    n2p = connections.nodecp;
+                }
+                else{
+                     n = connections.node2;
+                    n2p = connections.node2p;
+                }
+                if (n3crashed){
+                    n = connections.crash;
+                    n3p = connections.nodecp;
+                }
+                else{
+                     n = connections.node3;
+                    n3p = connections.node3p;
+                }
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(connections.node1.state !== 'disconnected') {
+            if(n.state !== 'disconnected') {
                 console.log('<mainController> getGenreCounts: Querying from Node 1');
-                result = await reportdb.genreCountMovies(connections.node1p, 'den_imdb');
+                result = await reportdb.genreCountMovies(n1p, 'den_imdb');
             }
             else {
                 console.log('<mainController> getGenreCounts: Node 1 is down; querying node 2 and 3');
-                result = await reportdb.genreCountMovies(connections.node2p, 'den_imdb');
-                result = result.concat(await reportdb.genreCountMovies(connections.node3p, 'den_imdb'));
+                result = await reportdb.genreCountMovies(n2p, 'den_imdb');
+                result = result.concat(await reportdb.genreCountMovies(n3p, 'den_imdb'));
             }
             
             var reports = [];
@@ -92,17 +142,41 @@ const controller = {
 
     getGenreRanks: async(req, res) => {
         var result;
+                if (n1crashed){
+                    n = connections.crash;
+                    n1p = connections.nodecp;
+                    }
+                else{
+                     n = connections.node1;
+                    n1p = connections.node1p;
+                }
+                if (n2crashed){
+                    n = connections.crash;
+                    n2p = connections.nodecp;
+                }
+                else{
+                     n = connections.node2;
+                    n2p = connections.node2p;
+                }
+                if (n3crashed){
+                    n = connections.crash;
+                    n3p = connections.nodecp;
+                }
+                else{
+                     n = connections.node3;
+                    n3p = connections.node3p;
+                }
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(connections.node1.state !== 'disconnected') {
+            if(n.state !== 'disconnected') {
                 console.log('<mainController> getGenreRanks: Querying from Node 1');
-                result = await reportdb.genreAvgRank(connections.node1p, 'den_imdb');
+                result = await reportdb.genreAvgRank(n1p, 'den_imdb');
             }
             else {
                 console.log('<mainController> getGenreRanks: Node 1 is down; querying node 2 and 3');
-                result = await reportdb.genreAvgRank(connections.node2p, 'den_imdb');
-                result = result.concat(await reportdb.genreAvgRank(connections.node3p, 'den_imdb'));
+                result = await reportdb.genreAvgRank(n2p, 'den_imdb');
+                result = result.concat(await reportdb.genreAvgRank(n3p, 'den_imdb'));
             }
             
             var reports = [];
@@ -124,17 +198,41 @@ const controller = {
 
     getDirectorCounts: async(req, res) => {
         var result;
+                if (n1crashed){
+                    n = connections.crash;
+                    n1p = connections.nodecp;
+                    }
+                else{
+                     n = connections.node1;
+                    n1p = connections.node1p;
+                }
+                if (n2crashed){
+                    n = connections.crash;
+                    n2p = connections.nodecp;
+                }
+                else{
+                     n = connections.node2;
+                    n2p = connections.node2p;
+                }
+                if (n3crashed){
+                    n = connections.crash;
+                    n3p = connections.nodecp;
+                }
+                else{
+                     n = connections.node3;
+                    n3p = connections.node3p;
+                }
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(connections.node1.state !== 'disconnected') {
+            if(n.state !== 'disconnected') {
                 console.log('<mainController> getDirectorCounts: Querying from Node 1');
-                result = await reportdb.directorCountMovies(connections.node1p, 'den_imdb');
+                result = await reportdb.directorCountMovies(n1p, 'den_imdb');
             }
             else {
                 console.log('<mainController> getDirectorCounts: Node 1 is down; querying node 2 and 3');
-                result = await reportdb.directorCountMovies(connections.node2p, 'den_imdb');
-                result = result.concat(await reportdb.directorCountMovies(connections.node3p, 'den_imdb'));
+                result = await reportdb.directorCountMovies(n2p, 'den_imdb');
+                result = result.concat(await reportdb.directorCountMovies(n3p, 'den_imdb'));
             }
             
             var reports = [];
@@ -156,17 +254,41 @@ const controller = {
 
     getActorCounts: async(req, res) => {
         var result;
+                if (n1crashed){
+                    n = connections.crash;
+                    n1p = connections.nodecp;
+                    }
+                else{
+                     n = connections.node1;
+                    n1p = connections.node1p;
+                }
+                if (n2crashed){
+                    n = connections.crash;
+                    n2p = connections.nodecp;
+                }
+                else{
+                     n = connections.node2;
+                    n2p = connections.node2p;
+                }
+                if (n3crashed){
+                    n = connections.crash;
+                    n3p = connections.nodecp;
+                }
+                else{
+                     n = connections.node3;
+                    n3p = connections.node3p;
+                }
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(connections.node1.state !== 'disconnected') {
+            if(n.state !== 'disconnected') {
                 console.log('<mainController> getActorCounts: Querying from Node 1');
-                result = await reportdb.actorCountMovies(connections.node1p, 'den_imdb');
+                result = await reportdb.actorCountMovies(n1p, 'den_imdb');
             }
             else {
                 console.log('<mainController> getActorCounts: Node 1 is down; querying node 2 and 3');
-                result = await reportdb.actorCountMovies(connections.node2p, 'den_imdb');
-                result = result.concat(await reportdb.actorCountMovies(connections.node3p, 'den_imdb'));
+                result = await reportdb.actorCountMovies(n2p, 'den_imdb');
+                result = result.concat(await reportdb.actorCountMovies(n3p, 'den_imdb'));
             }
             
             var reports = [];

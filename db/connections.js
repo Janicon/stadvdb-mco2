@@ -69,7 +69,8 @@ connections = {
     testp: util.promisify(conn0.query).bind(conn0),
     node1p: util.promisify(conn1.query).bind(conn1),
     node2p: util.promisify(conn2.query).bind(conn2),
-    node3p: util.promisify(conn3.query).bind(conn3)
+    node3p: util.promisify(conn3.query).bind(conn3),
+    nodecp: util.promisify(connc.query).bind(connc),
 }
 
 module.exports = connections;
