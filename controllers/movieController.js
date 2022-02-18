@@ -260,6 +260,106 @@ const controller = {
     */
 
     editMovie: async(req, res) => {
+    var columns = [];
+    var values = [];
+    var conditions = 'id=' + req.params.id;
+
+    if(req.body.editName != '') {
+        columns.push('name');
+        values.push('"'+req.body.editName+'"');
+    }
+    if(req.body.editYear != '') {
+        columns.push('year');
+        values.push(req.body.editYear);
+    }
+    if(req.body.editRank != '') {
+        columns.push('`rank`');
+        values.push(req.body.editRank);
+    }
+    if(req.body.editGenre != '') {
+        columns.push('genre');
+        values.push('"'+req.body.editGenre+'"');
+    }
+    if(req.body.editDirector != '') {
+        columns.push('director');
+        values.push('"'+req.body.editDirector+'"');
+    }
+    if(req.body.editActor1 != '') {
+        columns.push('actor1');
+        values.push('"'+req.body.editActor1+'"');
+    }
+    if(req.body.editActor2 != '') {
+        columns.push('actor2');
+        values.push('"'+req.body.editActor2+'"');
+    }
+        var datetime = '"'
+        datetime += new Date().toISOString().slice(0, 19).replace('T', ' ');
+        datetime += '"';
+
+     var logColumns = ['log_id', 'date', 'operation','movie_id'];
+     logColumns = logColumns.concat(columns);
+     var logValues = ['0', datetime, '"UPDATE"', req.params.id];
+     logValues = logValues.concat(values);
+
+
+        console.log('<movieController> editMovie: Editing movie ' + conditions);
+        console.log('<movieController> editMovie: ' + values);
+        try {
+            if (req.body.editYear < 1980) {
+                // Insert log for node 1 and perform write
+                console.log('<movieController> editMovie: Inserting Node 1 log');
+                await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
+
+                // update data in node 1
+                console.log('<movieController> editMovie: Update Node 1 record ' + conditions);
+                // update: async(conn, tablename, columns, values, conditions)
+                await db.update(connections.node1p, 'den_imdb', columns, values, conditions);
+
+                console.log('<movieController> editMovie: Updating Node 1 log');
+                await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+
+                // Insert log for node 2 and perform write
+                console.log('<movieController> editMovie: Inserting Node 2 log');
+                await db.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
+
+                console.log('<movieController> editMovie: Inserting Node 2 record');
+                 await db.update(connections.node2p, 'den_imdb', columns, values, conditions);
+
+                console.log('<movieController> editMovie: Updating Node 2 log');
+                await db.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+            }
+            else {
+                 // Insert log for node 1 and perform write
+                console.log('<movieController> editMovie: Inserting Node 1 log');
+                await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
+
+                // update data in node 1
+                console.log('<movieController> editMovie: Update Node 1 record ' + conditions);
+                // update: async(conn, tablename, columns, values, conditions)
+                await db.update(connections.node1p, 'den_imdb', columns, values, conditions);
+
+                console.log('<movieController> editMovie: Updating Node 1 log');
+                await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+
+                // Insert log for node 2 and perform write
+                console.log('<movieController> editMovie: Inserting Node 3 log');
+                await db.insertSpecific(connections.node3p, 'logs', logColumns, logValues);
+
+                console.log('<movieController> editMovie: Inserting Node 3 record');
+                 await db.update(connections.node3p, 'den_imdb', columns, values, conditions);
+
+                console.log('<movieController> editMovie: Updating Node 3 log');
+                await db.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+            }
+            res.redirect('/movie/' + req.body.editId);
+        } catch (err) {
+        console.log(err);
+            console.log('<movieController> editMovie: Error - Could not write to both nodes');
+            res.redirect('/');
+        }
+    },
+
+    /*
     const d = new Date();
             console.log(d);
             let time = d.getTime();
@@ -350,7 +450,7 @@ const controller = {
             console.log('<movieController> editMovie: Error - DB Update');
             res.redirect('/movie/' + req.params.id);
         }
-    },
+        */
 
     /*
     deleteMovie: async(req, res) => {
@@ -366,112 +466,125 @@ const controller = {
     */
 
     deleteMovie: async(req, res) => {
-            const d = new Date();
-            console.log(d);
-            let time = d.getTime();
-            console.log(time);
-        var year = req.query.year;
-        var conditions = 'id=' + req.params.id;
-        
-        try {            
-            if (year < 1980) {
-                n.query('INSERT INTO logs VALUES ('+logs+')');
-                n2.query('INSERT INTO logs VALUES ('+logs+')');
-                console.log('<movieController> addMovie: Deleting from Node 1 and 2');
-                await db.deleteTwoNodes(connections.node1p, connections.node2p, 'den_imdb', conditions);
-                if (n1crashed2== true){
-                n = connections.crash;
-                }
-                if(n.state !== 'disconnected')
-               {
-               n.query(log_commit);
-               n2.query(log_commit);
-               }
 
-               if (n1crashed2== true){
-                    n1crashed2 = false;
-                    n = connections.node1;
-               }
-            }
-            else {
-                n.query('INSERT INTO logs VALUES ('+logs+')');
-                n3.query('INSERT INTO logs VALUES ('+logs+')');
-                console.log('<movieController> addMovie: Deleting from Node 1 and 3');
+       //"DELETE FROM MyGuests WHERE id=3"
+       // Build log file
+       var datetime = '"'
+       datetime += new Date().toISOString().slice(0, 19).replace('T', ' ');
+       datetime += '"';
+       var conditions = 'id=' + req.params.id;
 
-                await db.deleteTwoNodes(connections.node1p, connections.node3p, 'den_imdb', conditions);
-                if (n1crashed2== true){
-                n = connections.crash;
-                }
-                if(n.state !== 'disconnected')
-                {
-               n.query(log_commit);
-               n3.query(log_commit);
-               }
+       var logColumns = ['log_id', 'date', 'operation','movie_id'];
+       var logValues = ['0', datetime, '"DELETE"', req.params.id];
 
-               if (n1crashed2== true){
-                    n1crashed2 = false;
-                    n = connections.node1;
-               }
-            }
+       console.log('<movieController> deleteMovie: Deleting movie id='+ req.params.id +' from DB');
+       try {
+           if (req.body.editYear < 1980) {
+               // Insert log for node 1 and perform write
+               console.log('<movieController> deleteMovie: Inserting Node 1 log');
+               await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
 
-            res.redirect('/');
-        } catch(err) {
-            console.log('<movieController> deleteMovie: Error - DB Delete');
-            res.redirect('/movie/' + req.params.id);
-        }
+               // update data in node 1
+               console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions);
+               //  delete: async(conn, tablename, conditions) => {
+               await db.delete(connections.node1p, 'den_imdb', conditions);
+
+               console.log('<movieController> deleteMovie: Updating Node 1 log');
+               await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+
+               // Insert log for node 2 and perform write
+               console.log('<movieController> deleteMovie: Inserting Node 2 log');
+               await db.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
+
+               console.log('<movieController> deleteMovie: Delete Node 2 record ' + conditions);
+               await db.delete(connections.node2p, 'den_imdb', conditions);
+
+               console.log('<movieController> deleteMovie: Updating Node 2 log');
+               await db.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+           }
+           else {
+                // Insert log for node 1 and perform write
+               console.log('<movieController> deleteMovie: Inserting Node 1 log');
+               await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
+
+               // update data in node 1
+               console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions);
+               //  delete: async(conn, tablename, conditions) => {
+               await db.delete(connections.node1p, 'den_imdb', conditions);
+
+               console.log('<movieController> deleteMovie: Updating Node 1 log');
+               await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+
+               // Insert log for node 3 and perform write
+               console.log('<movieController> deleteMovie: Inserting Node 3 log');
+               await db.insertSpecific(connections.node3p, 'logs', logColumns, logValues);
+
+               console.log('<movieController> deleteMovie: Delete Node 3 record ' + conditions);
+               await db.delete(connections.node3p, 'den_imdb', conditions);
+
+               console.log('<movieController> deleteMovie: Updating Node 3 log');
+               await db.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+           }
+           res.redirect('/');
+       } catch (err) {
+       console.log(err);
+           console.log('<movieController> deleteMovie: Error - Could not write to both nodes');
+           res.redirect('/');
+       }
     },
-          crashNode1: function(req, res){
-                         if (!n1crashed)
-                             console.log('<movieController> Crashing Node 1');
 
-                         else
-                            console.log('<movieController> Restoring Node 1');
+     crashNode1: function(req, res){
+                     if (!n1crashed)
+                         console.log('<movieController> Crashing Node 1');
 
-                         if(n1crashed == true)
-                                   n1crashed = false;
-                                   else
-                                   n1crashed = true;
+                     else
+                        console.log('<movieController> Restoring Node 1');
 
-                        },
-                 crashNode1befMV: function(req, res){
-                         if (!n1crashed)
-                             console.log('<movieController> Crashing Node 1');
+                     if(n1crashed == true)
+                               n1crashed = false;
+                               else
+                               n1crashed = true;
 
-                         else
-                            console.log('<movieController> Restoring Node 1');
+                    },
+             crashNode1befMV: function(req, res){
+                     if (!n1crashed)
+                         console.log('<movieController> Crashing Node 1');
 
-                         if(n1crashed2 == true)
-                                   n1crashed2 = false;
-                                   else
-                                   n1crashed2 = true;
+                     else
+                        console.log('<movieController> Restoring Node 1');
 
-                        },
-               crashNode2: function(req, res){
-                         if (!n2crashed)
-                             console.log('<movieController> Crashing Node 2');
+                     if(n1crashed2 == true)
+                               n1crashed2 = false;
+                               else
+                               n1crashed2 = true;
 
-                         else
-                            console.log('<movieController> Restoring Node 2');
+                    },
+           crashNode2: function(req, res){
+                     if (!n2crashed)
+                         console.log('<movieController> Crashing Node 2');
 
-
-                           if(n2crashed == true)
-                                     n2crashed = false;
-                                     else
-                                     n2crashed = true;
+                     else
+                        console.log('<movieController> Restoring Node 2');
 
 
-                      },
-              crashNode3: function(req, res) {
-                         if (!n3crashed)
-                             console.log('<movieController> Crashing Node 3');
+                       if(n2crashed == true)
+                                 n2crashed = false;
+                                 else
+                                 n2crashed = true;
 
-                         else
-                            console.log('<movieController> Restoring Node 3');
-                           if(n3crashed == true)
-                                     n3crashed = false;
-                                     else
-                                     n3crashed = true;
-                       }
+
+                  },
+          crashNode3: function(req, res) {
+                     if (!n3crashed)
+                         console.log('<movieController> Crashing Node 3');
+
+                     else
+                        console.log('<movieController> Restoring Node 3');
+                       if(n3crashed == true)
+                                 n3crashed = false;
+                                 else
+                                 n3crashed = true;
+                   }
 
 }
 

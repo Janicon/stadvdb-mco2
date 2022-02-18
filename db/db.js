@@ -84,6 +84,36 @@ const db = {
         });
     },
 
+    insertSpecific: async(conn, tablename, columns, values) => {
+        var parseColumns = columns[0];
+        var parseValues = values[0];
+        for (var i = 1; i < columns.length; i++) {
+            parseColumns += ', ' + columns[i];
+            parseValues += ', ' + values[i];
+        }
+
+        return new Promise((resolve, reject) => {
+            conn('START TRANSACTION')
+            .then((res) => {
+                console.log('<db.insert> Starting transaction');
+                return conn('INSERT INTO ' + tablename + '(' + parseColumns + ') VALUES(' + parseValues + ')');
+            })
+            .then((res) => {
+                result = res;
+                console.log('<db.insert> Inserted ' + result.affectedRows + ' row(s)');
+                return conn('COMMIT');
+            })
+            .then((res) => {
+                console.log('<db.insert> Committing transaction');
+                return resolve(result);
+            })
+            .catch((err) => {
+                console.error('<db.insert> Error - ', err);
+                return reject(err);
+            });
+        });
+    },
+
     insertTwoNodes: async(conn, conn2, tablename, values) => {
         var result1, result2;
         var transact1 = false, transact2 = false;
@@ -160,9 +190,9 @@ const db = {
 
     update: async(conn, tablename, columns, values, conditions) => {
         var result;
-        var query = columns[0] + '="' + values[0] + '"';
+        var query = columns[0] + '=' + values[0] + '';
         for (var i = 1; i < columns.length; i++)
-            query += ", " + columns[i] + '="' + values[i] + '"';
+            query += ", " + columns[i] + '=' + values[i];
         return new Promise((resolve, reject) => {
             conn('START TRANSACTION')
             .then((res) => {
