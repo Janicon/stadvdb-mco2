@@ -268,10 +268,6 @@ const controller = {
         columns.push('name');
         values.push('"'+req.body.editName+'"');
     }
-    if(req.body.editYear != '') {
-        columns.push('year');
-        values.push(req.body.editYear);
-    }
     if(req.body.editRank != '') {
         columns.push('`rank`');
         values.push(req.body.editRank);
@@ -296,9 +292,9 @@ const controller = {
         datetime += new Date().toISOString().slice(0, 19).replace('T', ' ');
         datetime += '"';
 
-     var logColumns = ['log_id', 'date', 'operation','movie_id'];
+     var logColumns = ['log_id', 'date', 'operation','movie_id', 'year'];
      logColumns = logColumns.concat(columns);
-     var logValues = ['0', datetime, '"UPDATE"', req.params.id];
+     var logValues = ['0', datetime, '"UPDATE"', req.params.id, req.body.editYear];
      logValues = logValues.concat(values);
 
 
@@ -311,19 +307,19 @@ const controller = {
                 await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
 
                 // update data in node 1
-                console.log('<movieController> editMovie: Update Node 1 record ' + conditions);
+                console.log('<movieController> editMovie: Update Node 1 record ' + conditions + ' year ' + year);
                 // update: async(conn, tablename, columns, values, conditions)
                 await db.update(connections.node1p, 'den_imdb', columns, values, conditions);
 
-                console.log('<movieController> editMovie: Updating Node 1 log');
+                console.log('<movieController> editMovie: Updating Node 1 log ');
                 await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
 
                 // Insert log for node 2 and perform write
                 console.log('<movieController> editMovie: Inserting Node 2 log');
                 await db.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
 
-                console.log('<movieController> editMovie: Inserting Node 2 record');
-                 await db.update(connections.node2p, 'den_imdb', columns, values, conditions);
+                console.log('<movieController> editMovie: Updating Node 2 record ' + conditions + ' year ' + year);
+                 await db.update(connections.node2p, 'den_imdb', columns, values, conditions + ' year ' + year);
 
                 console.log('<movieController> editMovie: Updating Node 2 log');
                 await db.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
@@ -334,7 +330,7 @@ const controller = {
                 await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
 
                 // update data in node 1
-                console.log('<movieController> editMovie: Update Node 1 record ' + conditions);
+                console.log('<movieController> editMovie: Updating Node 1 record ' + conditions + ' year ' + year);
                 // update: async(conn, tablename, columns, values, conditions)
                 await db.update(connections.node1p, 'den_imdb', columns, values, conditions);
 
@@ -345,13 +341,13 @@ const controller = {
                 console.log('<movieController> editMovie: Inserting Node 3 log');
                 await db.insertSpecific(connections.node3p, 'logs', logColumns, logValues);
 
-                console.log('<movieController> editMovie: Inserting Node 3 record');
-                 await db.update(connections.node3p, 'den_imdb', columns, values, conditions);
+                console.log('<movieController> editMovie: Updating Node 3 record ' + conditions + ' year ' + year);
+                await db.update(connections.node3p, 'den_imdb', columns, values, conditions);
 
                 console.log('<movieController> editMovie: Updating Node 3 log');
                 await db.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
             }
-            res.redirect('/movie/' + req.body.editId);
+            res.redirect('/movie/' + req.params.id);
         } catch (err) {
         console.log(err);
             console.log('<movieController> editMovie: Error - Could not write to both nodes');
@@ -473,19 +469,20 @@ const controller = {
        datetime += new Date().toISOString().slice(0, 19).replace('T', ' ');
        datetime += '"';
        var conditions = 'id=' + req.params.id;
+       var year = req.query.year;
 
-       var logColumns = ['log_id', 'date', 'operation','movie_id'];
-       var logValues = ['0', datetime, '"DELETE"', req.params.id];
+       var logColumns = ['log_id', 'date', 'operation','movie_id', 'year'];
+       var logValues = ['0', datetime, '"DELETE"', req.params.id, year];
 
        console.log('<movieController> deleteMovie: Deleting movie id='+ req.params.id +' from DB');
        try {
-           if (req.body.editYear < 1980) {
+           if (year < 1980) {
                // Insert log for node 1 and perform write
                console.log('<movieController> deleteMovie: Inserting Node 1 log');
                await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
 
                // update data in node 1
-               console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions);
+               console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions + ' year ' + year);
                //  delete: async(conn, tablename, conditions) => {
                await db.delete(connections.node1p, 'den_imdb', conditions);
 
@@ -496,7 +493,7 @@ const controller = {
                console.log('<movieController> deleteMovie: Inserting Node 2 log');
                await db.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
 
-               console.log('<movieController> deleteMovie: Delete Node 2 record ' + conditions);
+               console.log('<movieController> deleteMovie: Delete Node 2 record ' + conditions + ' year ' + year);
                await db.delete(connections.node2p, 'den_imdb', conditions);
 
                console.log('<movieController> deleteMovie: Updating Node 2 log');
@@ -508,7 +505,7 @@ const controller = {
                await db.insertSpecific(connections.node1p, 'logs', logColumns, logValues);
 
                // update data in node 1
-               console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions);
+               console.log('<movieController> deleteMovie: Delete Node 1 record ' + conditions + ' year ' + year);
                //  delete: async(conn, tablename, conditions) => {
                await db.delete(connections.node1p, 'den_imdb', conditions);
 
@@ -519,7 +516,7 @@ const controller = {
                console.log('<movieController> deleteMovie: Inserting Node 3 log');
                await db.insertSpecific(connections.node3p, 'logs', logColumns, logValues);
 
-               console.log('<movieController> deleteMovie: Delete Node 3 record ' + conditions);
+               console.log('<movieController> deleteMovie: Delete Node 3 record ' + conditions + ' year ' + year);
                await db.delete(connections.node3p, 'den_imdb', conditions);
 
                console.log('<movieController> deleteMovie: Updating Node 3 log');

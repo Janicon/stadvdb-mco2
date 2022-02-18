@@ -1,4 +1,9 @@
 $(document).ready(function() {
+
+    $('#edit-movie').submit(function() {
+      $('#edit-year').prop('disabled', false);
+    });
+
     $('#edit-movie').on('keyup', function() {
         var valid = true;
         var errorMessage = '&nbsp';
@@ -36,6 +41,7 @@ $(document).ready(function() {
     });
 
     $('#delete-movie-btn').on('click', function() {
+        $('#edit-year').prop('disabled', false);
         $.get('' + document.location.href + '/delete', {year: $('#movie-year').text().trim().slice(6)});
         document.location.href='/';
     });
