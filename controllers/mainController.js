@@ -4,7 +4,6 @@ const db = require('../db/db.js');
 const reportdb = require('../db/reports.js');
 const recovery = require('../db/recovery.js');
 
-const logParser = require('../helpers/logParser.js');
 var n1crashed = false;
 var n2crashed = false;
 var n3crashed = false;
@@ -26,37 +25,10 @@ const controller = {
 
     getIndex: async(req, res) => {
         var result;
-
-                if (n1crashed){
-                    n = connections.crash;
-                    n1p = connections.nodecp;
-                    }
-                else{
-                     n = connections.node1;
-                    n1p = connections.node1p;
-                }
-                if (n2crashed){
-                    n = connections.crash;
-                    n2p = connections.nodecp;
-                }
-                else{
-                     n = connections.node2;
-                    n2p = connections.node2p;
-                }
-                if (n3crashed){
-                    n = connections.crash;
-                    n3p = connections.nodecp;
-                }
-                else{
-                     n = connections.node3;
-                    n3p = connections.node3p;
-                }
-
-
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(n.state !== 'disconnected') {
+            if(!n1crashed) {
                 console.log('<mainController> getIndex: Querying from Node 1');
                 result = await db.findAll(n1p, 'den_imdb');
             }
@@ -88,34 +60,10 @@ const controller = {
 
     getGenreCounts: async(req, res) => {
         var result;
-                if (n1crashed){
-                    n = connections.crash;
-                    n1p = connections.nodecp;
-                    }
-                else{
-                     n = connections.node1;
-                    n1p = connections.node1p;
-                }
-                if (n2crashed){
-                    n = connections.crash;
-                    n2p = connections.nodecp;
-                }
-                else{
-                     n = connections.node2;
-                    n2p = connections.node2p;
-                }
-                if (n3crashed){
-                    n = connections.crash;
-                    n3p = connections.nodecp;
-                }
-                else{
-                     n = connections.node3;
-                    n3p = connections.node3p;
-                }
         try {
             // Take results from node 1 if available,
             // else take results from node 2 and 3 
-            if(n.state !== 'disconnected') {
+            if(!n1crashed) {
                 console.log('<mainController> getGenreCounts: Querying from Node 1');
                 result = await reportdb.genreCountMovies(n1p, 'den_imdb');
             }

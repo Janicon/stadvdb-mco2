@@ -1,5 +1,6 @@
 const db = require('./dbNoCrash.js');
 const connections = require('./connections.js');
+const logParser = require('../helpers/logParser.js');
 
 const recovery = {
     recoverPrimary: async(req, res) => {
@@ -13,8 +14,8 @@ const recovery = {
             
             // Prepare query to get all logs after last log in node 1
             var logDate = primary[0].date;
-            logDate = new Date(logDate).toISOString().slice(0, 19).replace('T', ' ');
             logDate.setTime(logDate.getTime() + (8*60*60*1000));
+            logDate = new Date(logDate).toISOString().slice(0, 19).replace('T', ' ');
             getNewLogsQuery += 'WHERE date >= "' + logDate + '"';
             getNewLogsQuery += ' ORDER BY log_id ASC FOR SHARE';
 
@@ -74,13 +75,9 @@ const recovery = {
                 targetNode = connections.node2p;
             else
                 targetNode = connections.node3p;
-            
-            // Reconnect node
-            // TODO: CODE HERE
 
             // Get latest log of secondary node
-            //var secondary = await db.query(targetNode, latestLogQuery);
-            var secondary = await db.query(targetNode, 'SELECT * FROM logs WHERE log_id=3');
+            var secondary = await db.query(targetNode, latestLogQuery);
             
             // Prepare query to get all logs after last log in secondary node
             var logDate = secondary[0].date;
@@ -116,21 +113,21 @@ const recovery = {
                     case 'INSERT':
                         console.log('<Recovery> Performing INSERT on movie with id=' + loglist[i].movie_id);
                         var values = logParser.parseInsertValues(loglist[i]);
-                        await db.insert(connections.node1p, 'den_imdb', values);
-                        await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], targetLogCondition);
+                        await db.insert(targetNode, 'den_imdb', values);
+                        await db.update(targetNode, 'logs', ['committed'], ['TRUE'], targetLogCondition);
                         break;
                     case 'UPDATE':
                         console.log('<Recovery> Performing UPDATE on movie with id=' + loglist[i].movie_id);
                         var columns = logParser.parseUpdateColumns(loglist[i]);
                         var values = logParser.parseUpdateValues(loglist[i]);
-                        await db.update(connections.node1p, 'den_imdb', columns, values, targetLogCondition);
-                        await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], targetLogCondition);
+                        await db.update(targetNode, 'den_imdb', columns, values, targetLogCondition);
+                        await db.update(targetNode, 'logs', ['committed'], ['TRUE'], targetLogCondition);
                         break;
                     case 'DELETE':
                         console.log('<Recovery> Performing DELETE on movie with id=' + loglist[i].movie_id);
                         var id = loglist[i].movie_id;
-                        await db.delete(connections.node1p, 'den_imdb', ('id=' + id));
-                        await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], targetLogCondition);
+                        await db.delete(targetNode, 'den_imdb', ('id=' + id));
+                        await db.update(targetNode, 'logs', ['committed'], ['TRUE'], targetLogCondition);
                         break;
                     default:
                         console.log('<Recovery> Log contains invalid operation');

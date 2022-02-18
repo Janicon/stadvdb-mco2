@@ -1,4 +1,29 @@
 const dbNoCrash = {
+    query: async(conn, customQuery) => {
+        var result;
+
+        return new Promise((resolve, reject) => {
+            conn('START TRANSACTION')
+            .then((res) => {
+                console.log('Starting transaction');
+                return conn(customQuery);
+            })
+            .then((res) => {
+                result = res;
+                console.log('<db.query> Found ' + result.length + ' row(s)');
+                return conn('COMMIT');
+            })
+            .then((res) => {
+                console.log('<db.find> Committing transaction');
+                return resolve(result);
+            })
+            .catch((err) => {
+                console.error('<db.find> Error - ', err);
+                return reject(err);
+            });
+        });
+    },
+
     insert: async(conn, tablename, values) => {
         var result;
         

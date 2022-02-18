@@ -345,7 +345,6 @@ const controller = {
             console.log('<movieController> Crashing Node 1');
         else {
             console.log('<movieController> Restoring Node 1');
-            recovery.recoverPrimary();
         }
 
         n1crashed = !n1crashed;
@@ -358,7 +357,6 @@ const controller = {
             console.log('<movieController> Crashing Node 2');
         else {
             console.log('<movieController> Restoring Node 2');
-            recovery.recoverSecondary('Node 2');
         }
 
         n1crashed = false;

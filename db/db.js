@@ -111,7 +111,7 @@ const db = {
             })
             .catch((err) => {
                 console.log('<db.insert> Rolling back transaction');
-                return conn('ROLLBACK');
+                return reject();
             });
         });
     },
@@ -249,7 +249,7 @@ const db = {
             })
             .catch((err) => {
                 console.log('<db.insert> Rolling back transaction');
-                return conn('ROLLBACK');
+                return reject();
             });
         });
     },
@@ -356,7 +356,7 @@ const db = {
             })
             .catch((err) => {
                 console.log('<db.insert> Rolling back transaction');
-                return conn('ROLLBACK');
+                return reject();
             });
         });
     },
