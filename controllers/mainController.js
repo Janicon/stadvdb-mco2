@@ -276,6 +276,8 @@ const controller = {
         }
 
         n1crashed = !n1crashed;
+        n2crashed = false;
+        n3crashed = false;
     },
 
     crashNode2: function(req, res){
@@ -286,7 +288,9 @@ const controller = {
             recovery.recoverSecondary('Node 2');
         }
 
+        n1crashed = false;
         n2crashed = !n2crashed;
+        n3crashed = false;
     },
     crashNode3: function(req, res) {
         if (!n3crashed)
@@ -296,6 +300,8 @@ const controller = {
             recovery.recoverSecondary('Node 3');
         }
 
+        n1crashed = false;
+        n2crashed = false;
         n3crashed = !n3crashed;
     },
 }

@@ -209,8 +209,8 @@ const controller = {
                     console.log('<movieController> editMovie: Inserting Node 2 log');
                     await dbNC.insertSpecific(connections.node2p, 'logs', logColumns, logValues);
 
-                    console.log('<movieController> editMovie: Updating Node 2 record ' + conditions + ' year ' + year);
-                    var result2 = await db.update(n2p, 'den_imdb', columns, values, conditions + ' year ' + year);
+                    console.log('<movieController> editMovie: Updating Node 2 record ' + conditions + ' year ' + req.body.editYear);
+                    var result2 = await db.update(n2p, 'den_imdb', columns, values, conditions);
                     if(result2 == null)
                         throw new Error('Could not insert to node 2');
 
