@@ -1,7 +1,6 @@
 var nCrash = false;
 
 const db = {
-
     connect: function(conn, servername) {
         conn.connect(
             function (err) { 
@@ -12,8 +11,32 @@ const db = {
         });
     },
 
-    find: async(conn, tablename, conditions) => {
+    query: async(conn, customQuery) => {
+        var result;
 
+        return new Promise((resolve, reject) => {
+            conn('START TRANSACTION')
+            .then((res) => {
+                console.log('Starting transaction');
+                return conn(customQuery);
+            })
+            .then((res) => {
+                result = res;
+                console.log('<db.query> Found ' + result.length + ' row(s)');
+                return conn('COMMIT');
+            })
+            .then((res) => {
+                console.log('<db.find> Committing transaction');
+                return resolve(result);
+            })
+            .catch((err) => {
+                console.error('<db.find> Error - ', err);
+                return reject(err);
+            });
+        });
+    },
+
+    find: async(conn, tablename, conditions) => {
         var result;
 
         return new Promise((resolve, reject) => {
@@ -27,7 +50,7 @@ const db = {
                 if(nCrash)
                     throw new Error();
                 console.log('<db.find> Found ' + result.length + ' row(s)');
-                return conn('COMMIT')
+                return conn('COMMIT');
             })
             .then((res) => {
                 console.log('<db.find> Committing transaction');
@@ -110,8 +133,6 @@ const db = {
             })
             .then((res) => {
                 result = res;
-                if(nCrash)
-                    throw new Error();
                 console.log('<db.insert> Inserted ' + result.affectedRows + ' row(s)');
                 return conn('COMMIT');
             })
@@ -356,8 +377,8 @@ const db = {
                 // If Node 1 was updated, commit
                 else {
                     // Commit updates to Node 1
-                if(nCrash)
-                    throw new Error();
+                    if(nCrash)
+                        throw new Error();
                     return conn('COMMIT')
                     .then((res) => {
                         console.log('<db.delete> Committing transaction 1');
@@ -379,8 +400,8 @@ const db = {
                         // If Node 2 was updated, commit
                         else {
                             // Commit updates to Node 2
-                if(nCrash)
-                    throw new Error();
+                            if(nCrash)
+                                throw new Error();
                             return conn2('COMMIT')
                             .then((res) => {
                                 console.log('<db.delete> Committing transaction 2');
@@ -412,67 +433,15 @@ const db = {
         });
     },
     crashNodeBef: function(req, res) {
-                             if (!nCrash)
-                                 console.log('<db> Crashing Before Next Commits');
-
-                             else
-                                console.log('<db> Will Not Crash Before Next Commits');
-                          if(nCrash)
-                                    nCrash = false;
-                                    else
-                                    nCrash = true;
-                      }
-    
-    /*
-    findCount: function(conn, tablename, callback) {
-        conn.query('SELECT COUNT(*) AS count FROM ' + tablename,
-        function (err, results, fields) {
-            if (err) return callback(null);
-            //if (err) throw err;
-            else console.log('Found ' + results.length + ' row(s).');
-            return callback(results);
-        })
-        conn.end(
-            function (err) { 
-                if (err) return callback(null);
-                //if (err) throw err;
-                else  console.log('Closing connection.') 
-        });
-    },
-
-    insertOne: function(conn, tablename, values, callback) {
-        conn.query('INSERT INTO ' + tablename + ' VALUES (' + values + ')',
-            function(err, results, fields) {
-            //if (err) throw err;
-            if (err) return callback(false);
-            else console.log('Inserted ' + results.affectedRows + ' row(s).');
-            return callback(true);
-        })
-        conn.end(
-            function (err) { 
-                //if (err) throw err;
-                if (err) return callback(false);
-                else console.log('Done.') 
-        });
-    },
-
-    update: function(conn, tablename, columns, values, conditions, callback) {
-        var query = '';
-        for (var i in columns)
-            query += columns[i] + '=' + values[i];
-        conn.query('UPDATE ' + tablename + ' SET ' + query + ' WHERE ' + conditions,
-            function(err, results, fields) {
-                if (err) return callback(false);
-                else console.log('Updated ' + rsults.affectedRows + ' row(s).');
-                return callback(true);
-            })
-        conn.end(
-            function(err) {
-                if (err) return callback(false);
-                else console.log('Done.');
-        });
+        if (!nCrash)
+            console.log('<db> Crashing Before Next Commits');
+        else
+            console.log('<db> Will Not Crash Before Next Commits');
+        if(nCrash)
+            nCrash = false;
+            else
+            nCrash = true;
     }
-    */
 };
 
 module.exports = db;

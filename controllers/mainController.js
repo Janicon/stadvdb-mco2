@@ -2,7 +2,9 @@ const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
 const db = require('../db/db.js');
 const reportdb = require('../db/reports.js');
+const recovery = require('../db/recovery.js');
 
+const logParser = require('../helpers/logParser.js');
 var n1crashed = false;
 var n2crashed = false;
 var n3crashed = false;
@@ -318,42 +320,36 @@ const controller = {
         res.render('error');
     },
     crashNode1: function(req, res){
-                        if (!n1crashed)
-                            {console.log('<mainController> Crashing Node 1');}
+        if (!n1crashed)
+            {console.log('<mainController> Crashing Node 1');}
+        else {
+            console.log('<mainController> Restoring Node 1');
+            recovery.recoverPrimary();
+        }
 
-                        else
-                           console.log('<mainController> Restoring Node 1');
-                    if(n1crashed == true)
-                              n1crashed = false;
-                              else
-                              n1crashed = true;
+        n1crashed = !n1crashed;
+    },
 
-                   },
-          crashNode2: function(req, res){
-                         if (!n2crashed)
-                             console.log('<mainController> Crashing Node 2');
+    crashNode2: function(req, res){
+        if (!n2crashed)
+            console.log('<mainController> Crashing Node 2');
+        else {
+            console.log('<mainController> Restoring Node 2');
+            recovery.recoverSecondary('Node 2');
+        }
 
-                         else
-                            console.log('<mainController> Restoring Node 2');
+        n2crashed = !n2crashed;
+    },
+    crashNode3: function(req, res) {
+        if (!n3crashed)
+            console.log('<mainController> Crashing Node 3');
+        else {
+            console.log('<mainController> Restoring Node 3');
+            recovery.recoverSecondary('Node 3');
+        }
 
-                      if(n2crashed == true)
-                                n2crashed = false;
-                                else
-                                n2crashed = true;
-
-
-                 },
-         crashNode3: function(req, res) {
-                         if (!n3crashed)
-                             console.log('<mainController> Crashing Node 3');
-
-                         else
-                            console.log('<mainController> Restoring Node 3');
-                      if(n3crashed == true)
-                                n3crashed = false;
-                                else
-                                n3crashed = true;
-                  }
+        n3crashed = !n3crashed;
+    },
 }
 
 module.exports = controller;
