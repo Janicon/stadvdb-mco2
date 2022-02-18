@@ -1,6 +1,7 @@
 const e = require('express');
 const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
+const { connect } = require('../db/db.js');
 const db = require('../db/db.js');
 var n1crashed = false;
 var n1crashed2 = false;
@@ -56,29 +57,81 @@ const controller = {
         }            
     },
 
-    /*
     addMovie: async(req, res) => {
         var values = req.body.addId + ', '
-            + req.body.addName + ', '
+            + '"' + req.body.addName + '", '
             + req.body.addYear + ', '
             + req.body.addRank + ', '
-            + req.body.addGenre + ', '
-            + req.body.addDirector + ', '
-            + req.body.addActor1 + ', '
-            + req.body.addActor2;
+            + '"' + req.body.addGenre + '", '
+            + '"' + req.body.addDirector + '", '
+            + '"' + req.body.addActor1 + '", '
+            + '"' + req.body.addActor2 + '"';
 
-        // Try to write to Node 1
-        
+        // Build log file
+        var datetime = '"'
+        datetime += new Date().toISOString().slice(0, 19).replace('T', ' ');
+        datetime += '"';
+
+        var log = '0, '
+            + datetime + ', '
+            + '"INSERT", '
+            + values + ', '
+            + 'FALSE';
+
+        console.log('<movieController> addMovie: Adding movie to DB');
+        console.log('<movieController> addMovie: ' + values);
         try {
-            await db.find(connections.node1p, 'den_imdb', 'id=' + id);
+            if (req.body.addYear < 1980) {
+                // Insert log for node 1 and perform write
+                console.log('<movieController> addMovie: Inserting Node 1 log');
+                await db.insert(connections.node1p, 'logs', log);
+
+                console.log('<movieController> addMovie: Inserting Node 1 record');
+                await db.insert(connections.node1p, 'den_imdb', values);
+
+                console.log('<movieController> addMovie: Updating Node 1 log');
+                await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+
+                // Insert log for node 2 and perform write
+                console.log('<movieController> addMovie: Inserting Node 2 log');
+                await db.insert(connections.node2p, 'logs', log);
+
+                console.log('<movieController> addMovie: Inserting Node 2 record');
+                await db.insert(connections.node2p, 'den_imdb', values);
+
+                console.log('<movieController> addMovie: Updating Node 2 log');
+                await db.update(connections.node2p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+            }
+            else {
+                // Insert log for node 1 and perform write
+                console.log('<movieController> addMovie: Inserting Node 1 log');
+                await db.insert(connections.node1p, 'logs', log);
+
+                console.log('<movieController> addMovie: Inserting Node 1 record');
+                await db.insert(connections.node1p, 'den_imdb', values);
+
+                console.log('<movieController> addMovie: Updating Node 1 log');
+                await db.update(connections.node1p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+
+                // Insert log for node 2 and perform write
+                console.log('<movieController> addMovie: Inserting Node 3 log');
+                await db.insert(connections.node3p, 'logs', log);
+
+                console.log('<movieController> addMovie: Inserting Node 3 log');
+                await db.insert(connections.node3p, 'den_imdb', values);
+
+                console.log('<movieController> addMovie: Updating Node 3 log');
+                await db.update(connections.node3p, 'logs', ['committed'], ['TRUE'], ('date=' + datetime));
+            }
             res.redirect('/movie/' + req.body.addId);
         } catch (err) {
-            console.log('<movieController.addMovie> Error writing to nodes');
+        console.log(err);
+            console.log('<movieController> addMovie: Error - Could not write to both nodes');
             res.redirect('/');
         }
     },
-    */
 
+    /*
     addMovie: async(req, res) => {
     var addCrash = false;
         const d = new Date();
@@ -159,6 +212,7 @@ const controller = {
             res.redirect('/');
         }
     },
+    */
 
     /*
     editMovie: async(req, res) => {
