@@ -1,4 +1,3 @@
-const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
 const db = require('../db/db.js');
 const reportdb = require('../db/reports.js');
