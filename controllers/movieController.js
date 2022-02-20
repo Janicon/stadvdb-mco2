@@ -1,7 +1,4 @@
-const e = require('express');
-const async = require('hbs/lib/async');
 const connections = require('../db/connections.js');
-const { connect } = require('../db/db.js');
 const db = require('../db/db.js');
 const dbNC = require('../db/dbNoCrash.js');
 const recovery = require('../db/recovery.js');
