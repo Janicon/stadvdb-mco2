@@ -350,6 +350,7 @@ const controller = {
         n1crashed = !n1crashed;
         n2crashed = false;
         n3crashed = false;
+        res.end();
     },
 
     crashNode2: function(req, res){
@@ -362,6 +363,8 @@ const controller = {
         n1crashed = false;
         n2crashed = !n2crashed;
         n3crashed = false;
+        res.end();
+
     },
 
     crashNode3: function(req, res) {
@@ -375,6 +378,7 @@ const controller = {
         n1crashed = false;
         n2crashed = false;
         n3crashed = !n3crashed;
+        res.end();
     }
 }
 
